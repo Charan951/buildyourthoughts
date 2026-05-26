@@ -158,7 +158,7 @@ const HeroCarousel = () => {
   };
 
   return (
-    <section className="relative min-h-[65vh] md:min-h-[90vh] flex items-center justify-center text-center overflow-hidden bg-black -mt-20 isolate">
+    <section className="relative min-h-[65vh] md:min-h-[75vh] flex items-center justify-center text-center overflow-hidden bg-black -mt-20 isolate">
       {/* Slide backgrounds */}
       {slides.map((s, i) => {
         const active = i === current || i === prevIdx;
@@ -200,7 +200,7 @@ const HeroCarousel = () => {
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black/70 to-transparent z-[2] pointer-events-none" />
       <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-black/55 to-transparent z-[2] pointer-events-none" />
 
-      <div className="relative z-10 container px-5 pt-24 md:pt-28 pb-14 md:pb-16">
+      <div className="relative z-10 container px-5 pt-24 md:pt-24 pb-10 md:pb-12">
         <div key={`badge-${current}`} className="animate-hero-pop mb-4 md:mb-8">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-full bg-white/15 border border-white/30 text-white text-xs md:text-sm backdrop-blur-sm">
             <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-primary shrink-0" />
@@ -214,11 +214,11 @@ const HeroCarousel = () => {
           className="animate-hero-pop font-heading font-bold mb-3 md:mb-6 tracking-tight leading-tight"
           style={{ animationDelay: "80ms" }}
         >
-          <span className="block text-[1.75rem] sm:text-5xl md:text-7xl lg:text-8xl text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)]">
+          <span className="block text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)]">
             {titlePart}
           </span>
           <span
-            className="block text-[1.75rem] sm:text-5xl md:text-7xl lg:text-8xl mt-1 md:mt-2 text-primary"
+            className="block text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl mt-1 md:mt-2 text-primary"
             style={{ color: "var(--hero-highlight, hsl(var(--primary)))" }}
           >
             {highlightPart}

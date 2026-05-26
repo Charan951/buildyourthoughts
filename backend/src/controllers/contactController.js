@@ -17,10 +17,13 @@ exports.submit = async (req, res) => {
   try {
     const entry = await Contact.create({ name, email, subject, message });
 
-    // Send notification email to srikanth@speshway.com
-    await transporter.sendMail({
-      from: `"Speshway Contact Form" <${process.env.EMAIL_USER}>`,
-      to: "srikanth@speshway.com",
+    // Respond immediately — don't let email failure block the user
+    res.status(201).json({ message: "Message received! We'll get back to you soon.", id: entry._id });
+
+    // Send notification email in the background (non-blocking)
+    transporter.sendMail({
+      from: `"BUILD YOUR THOUGHTS Contact" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
       replyTo: email,
       subject: `New Contact Message: ${subject}`,
       html: `
@@ -33,11 +36,44 @@ exports.submit = async (req, res) => {
         <hr>
         <p style="color:#888;font-size:12px;">Sent via BUILD YOUR THOUGHTS contact form</p>
       `,
-    });
+    }).catch(err => console.error("Contact email send error:", err));
 
-    res.status(201).json({ message: "Message received! We'll get back to you soon.", id: entry._id });
   } catch (err) {
     console.error("Contact submit error:", err);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+exports.getAll = async (req, res) => {
+  try {
+    const contacts = await Contact.find().sort({ createdAt: -1 });
+    res.json(contacts);
+  } catch (err) {
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+exports.updateStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const contact = await Contact.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+    if (!contact) return res.status(404).json({ message: "Not found." });
+    res.json(contact);
+  } catch (err) {
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+exports.deleteContact = async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndDelete(req.params.id);
+    if (!contact) return res.status(404).json({ message: "Not found." });
+    res.json({ message: "Deleted." });
+  } catch (err) {
     res.status(500).json({ message: "Server error." });
   }
 };
