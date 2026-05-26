@@ -14,6 +14,7 @@ const carouselSlideSchema = new mongoose.Schema(
     imagePublicId: { type: String, default: "" },
     isActive: { type: Boolean, default: true },
     order: { type: Number, default: 0 },
+    highlightGradient: { type: String, default: "purple-blue-cyan-orange" },
   },
   { timestamps: true }
 );

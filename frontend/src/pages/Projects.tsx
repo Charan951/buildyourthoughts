@@ -58,10 +58,30 @@ const Projects = () => {
   useSiteDataRefresh(["projects", "settings", "all"], loadProjects, [loadProjects]);
 
   const stats = [
-    { val: settings.proj_stat1_val || defaultStats[0].val, label: settings.proj_stat1_label || defaultStats[0].label, color: "primary" },
-    { val: settings.proj_stat2_val || defaultStats[1].val, label: settings.proj_stat2_label || defaultStats[1].label, color: "accent" },
-    { val: settings.proj_stat3_val || defaultStats[2].val, label: settings.proj_stat3_label || defaultStats[2].label, color: "primary" },
-    { val: settings.proj_stat4_val || defaultStats[3].val, label: settings.proj_stat4_label || defaultStats[3].label, color: "accent" },
+    {
+      val: settings.proj_stat1_val || defaultStats[0].val,
+      label: settings.proj_stat1_label || defaultStats[0].label,
+      textClass: "text-primary",
+      bgClass: "bg-primary/10",
+    },
+    {
+      val: settings.proj_stat2_val || defaultStats[1].val,
+      label: settings.proj_stat2_label || defaultStats[1].label,
+      textClass: "text-accent",
+      bgClass: "bg-accent/10",
+    },
+    {
+      val: settings.proj_stat3_val || defaultStats[2].val,
+      label: settings.proj_stat3_label || defaultStats[2].label,
+      textClass: "text-primary",
+      bgClass: "bg-primary/10",
+    },
+    {
+      val: settings.proj_stat4_val || defaultStats[3].val,
+      label: settings.proj_stat4_label || defaultStats[3].label,
+      textClass: "text-accent",
+      bgClass: "bg-accent/10",
+    },
   ];
 
   return (

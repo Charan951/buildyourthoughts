@@ -35,7 +35,7 @@ export default function AdminSidebar({ active }: { active: string }) {
       {/* Hamburger button — only on mobile (below lg) */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed top-3 left-3 z-[500] lg:hidden w-10 h-10 bg-slate-950 rounded-xl flex flex-col items-center justify-center gap-[5px] shadow-lg"
+        className="fixed top-3 left-3 z-[500] lg:hidden w-10 h-10 bg-[#2d1b69] rounded-xl flex flex-col items-center justify-center gap-[5px] shadow-lg"
         aria-label="Open menu"
       >
         <span className="block w-5 h-0.5 bg-white rounded" />
@@ -43,7 +43,7 @@ export default function AdminSidebar({ active }: { active: string }) {
         <span className="block w-5 h-0.5 bg-white rounded" />
       </button>
 
-      {/* Full-screen dark overlay — shown when sidebar is open on mobile */}
+      {/* Full-screen dark overlay */}
       <div
         className={`fixed inset-0 z-[600] bg-black/70 transition-opacity duration-300 lg:hidden ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -54,7 +54,7 @@ export default function AdminSidebar({ active }: { active: string }) {
       {/* Sidebar drawer */}
       <aside
         className={`
-          fixed top-0 left-0 h-full z-[700] w-64 bg-slate-950 text-white
+          fixed top-0 left-0 h-full z-[700] w-64 bg-[#1e1b2e] text-white
           flex flex-col py-5 px-4 shadow-2xl
           transition-transform duration-300 ease-in-out
           ${open ? "translate-x-0" : "-translate-x-full"}
@@ -67,10 +67,9 @@ export default function AdminSidebar({ active }: { active: string }) {
             <img src={logo} alt="" className="w-8 h-8 object-contain shrink-0" />
             <span className="font-bold text-sm leading-tight">Speshway Admin</span>
           </div>
-          {/* Close button — mobile only */}
           <button
             onClick={() => setOpen(false)}
-            className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-cyan-300 hover:text-white hover:bg-white/10 transition-colors text-lg"
+            className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-purple-300 hover:text-white hover:bg-white/10 transition-colors text-lg"
             aria-label="Close menu"
           >
             ✕
@@ -85,8 +84,8 @@ export default function AdminSidebar({ active }: { active: string }) {
               onClick={() => handleNav(n.path)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-left transition-colors w-full ${
                 active === n.label
-                  ? "bg-cyan-600/40 text-white"
-                  : "text-cyan-300 hover:bg-cyan-600/20 hover:text-white"
+                  ? "bg-purple-600/40 text-white"
+                  : "text-purple-300 hover:bg-purple-600/20 hover:text-white"
               }`}
             >
               <span className="text-base shrink-0">{n.icon}</span>

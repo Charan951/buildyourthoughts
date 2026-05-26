@@ -15,9 +15,13 @@ export type SiteDataScope =
   | "all";
 
 export const SITE_DATA_UPDATED = "site-data-updated";
+const SITE_DATA_LS_KEY = "site_data_updated";
 
 export function notifySiteDataUpdated(scope: SiteDataScope = "all") {
+  // Notify same tab
   window.dispatchEvent(new CustomEvent(SITE_DATA_UPDATED, { detail: { scope } }));
+  // Notify other tabs via localStorage
+  localStorage.setItem(SITE_DATA_LS_KEY, JSON.stringify({ scope, ts: Date.now() }));
 }
 
 export async function fetchPublic<T>(path: string): Promise<T> {

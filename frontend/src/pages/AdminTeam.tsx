@@ -109,7 +109,7 @@ export default function AdminTeam() {
   const f = (key: keyof typeof emptyForm) => (v: string) => setForm(p => ({ ...p, [key]: v }));
 
   return (
-    <div className="flex min-h-screen bg-gray-50 font-sans">
+    <div className="admin-page flex min-h-screen bg-gray-50 font-sans">
       <AdminSidebar active="Team" />
 
       <main className="lg:ml-56 flex-1 p-4 md:p-6 pt-16 lg:pt-6 min-w-0">
@@ -118,7 +118,7 @@ export default function AdminTeam() {
             <h1 className="text-xl md:text-2xl font-black text-gray-900">Team Members ({members.length})</h1>
             <p className="text-gray-400 text-sm mt-1">Manage your team — changes reflect on the Team page</p>
           </div>
-          <button onClick={openAdd} className="flex items-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl bg-cyan-600 text-white text-xs md:text-sm font-bold hover:bg-cyan-700 shrink-0">
+          <button onClick={openAdd} className="flex items-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl bg-purple-600 text-white text-xs md:text-sm font-bold hover:bg-purple-700 shrink-0">
             + Add Member
           </button>
         </div>
@@ -151,7 +151,7 @@ export default function AdminTeam() {
                       <h3 className="font-bold text-gray-800 truncate">{m.name}</h3>
                       {!m.isActive && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-200 text-gray-500 shrink-0">Hidden</span>}
                     </div>
-                    <p className="text-cyan-600 text-xs font-bold uppercase tracking-wider">{m.role}</p>
+                    <p className="text-purple-600 text-xs font-bold uppercase tracking-wider">{m.role}</p>
                   </div>
                 </div>
                 {m.bio && <p className="text-gray-500 text-xs line-clamp-2 mb-4">{m.bio}</p>}
@@ -186,14 +186,14 @@ export default function AdminTeam() {
               <div>
                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Bio</label>
                 <textarea value={form.bio} onChange={e => setForm(p => ({ ...p, bio: e.target.value }))} rows={2}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm resize-none" />
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm text-gray-900 bg-white resize-none text-gray-900 bg-white" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <TField label="Initials (e.g. RK)" value={form.initials} onChange={f("initials")} placeholder="Auto-generated" />
                 <div>
                   <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Avatar Gradient</label>
                   <select value={form.gradient} onChange={e => setForm(p => ({ ...p, gradient: e.target.value }))}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm">
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm text-gray-900 bg-white">
                     {gradients.map(g => <option key={g} value={g}>{g}</option>)}
                   </select>
                 </div>
@@ -222,7 +222,7 @@ export default function AdminTeam() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={saving} className="flex-1 py-3 rounded-xl bg-cyan-600 text-white font-bold text-sm hover:bg-cyan-700 disabled:opacity-60">
+                <button type="submit" disabled={saving} className="flex-1 py-3 rounded-xl bg-purple-600 text-white font-bold text-sm hover:bg-purple-700 disabled:opacity-60">
                   {saving ? "Saving…" : editMember ? "Update Member" : "Add Member"}
                 </button>
                 <button type="button" onClick={() => setShowModal(false)} className="px-6 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-sm">Cancel</button>
@@ -241,6 +241,6 @@ const TField = ({ label, value, onChange, required, placeholder, type = "text" }
   <div>
     <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">{label}</label>
     <input type={type} value={value} onChange={e => onChange(e.target.value)} required={required} placeholder={placeholder}
-      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm" />
+      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm text-gray-900 bg-white" />
   </div>
 );

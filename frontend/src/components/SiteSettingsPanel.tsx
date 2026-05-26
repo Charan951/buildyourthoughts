@@ -116,11 +116,11 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
   const groupItems = items.filter(i => i.group === activeGroup);
 
   return (
-    <div className="space-y-6">
+    <div className="admin-page space-y-6 [color-scheme:light]">
       {/* Admin info card */}
       {admin && (
         <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex gap-6 items-center">
-          <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center text-cyan-600 font-black text-xl">
+          <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600 font-black text-xl">
             {admin.email?.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -130,71 +130,89 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
         </div>
       )}
 
-      {/* ── Hero Highlight Color ── */}
+      {/* ── Hero Highlight Gradient ── */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <div>
             <h2 className="font-bold text-gray-800 flex items-center gap-2">
-              🎨 Hero Highlight Color
+              🎨 Hero Highlight Gradient
             </h2>
-            <p className="text-xs text-gray-400 mt-0.5">The colour of the second line text in the homepage carousel (e.g. "Online &amp; Beyond")</p>
+            <p className="text-xs text-gray-400 mt-0.5">3-colour gradient for the highlight text in the homepage carousel</p>
           </div>
           <button
-            onClick={() => handleSave("hero_highlight_color")}
-            disabled={saving["hero_highlight_color"]}
-            className={`px-5 py-2 rounded-xl text-sm font-bold transition-colors ${saved["hero_highlight_color"] ? "bg-green-500 text-white" : "bg-cyan-600 text-white hover:bg-cyan-700"} disabled:opacity-60`}
+            onClick={async () => {
+              setSaving(p => ({ ...p, hero_gradient: true }));
+              await fetch(`${API}/settings`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+                body: JSON.stringify({
+                  hero_color1: values["hero_color1"] || "#9333ea",
+                  hero_color2: values["hero_color2"] || "#2563eb",
+                  hero_color3: values["hero_color3"] || "#06b6d4",
+                }),
+              });
+              setSaved(p => ({ ...p, hero_gradient: true }));
+              setTimeout(() => setSaved(p => ({ ...p, hero_gradient: false })), 2000);
+              notifySiteDataUpdated("settings");
+              setSaving(p => ({ ...p, hero_gradient: false }));
+            }}
+            disabled={saving["hero_gradient"]}
+            className={`px-5 py-2 rounded-xl text-sm font-bold transition-colors ${saved["hero_gradient"] ? "bg-green-500 text-white" : "bg-purple-600 text-white hover:bg-purple-700"} disabled:opacity-60`}
           >
-            {saving["hero_highlight_color"] ? "Saving…" : saved["hero_highlight_color"] ? "✓ Saved" : "Save"}
+            {saving["hero_gradient"] ? "Saving…" : saved["hero_gradient"] ? "✓ Saved" : "Save Gradient"}
           </button>
         </div>
-        <div className="p-6">
-          <div className="flex gap-4 items-center flex-wrap">
-            {/* Color picker */}
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-gray-200 focus-within:border-cyan-500 transition-all bg-white">
-              <input
-                type="color"
-                value={values["hero_highlight_color"] || "#0b78d2"}
-                onChange={e => setValues(p => ({ ...p, hero_highlight_color: e.target.value }))}
-                className="w-10 h-10 rounded-lg cursor-pointer border-0 bg-transparent p-0"
-              />
-              <input
-                type="text"
-                value={values["hero_highlight_color"] || ""}
-                onChange={e => setValues(p => ({ ...p, hero_highlight_color: e.target.value }))}
-                onKeyDown={e => e.key === "Enter" && handleSave("hero_highlight_color")}
-                placeholder="#0b78d2"
-                className="w-28 text-sm focus:outline-none font-mono"
-              />
-            </div>
-            {/* Preset swatches */}
-            <div className="flex gap-2 flex-wrap">
-              {[
-                { label: "Sky Blue", color: "#0b78d2" },
-                { label: "Orange", color: "#f97316" },
-                { label: "Pink", color: "#ec4899" },
-                { label: "Cyan", color: "#12b5ff" },
-                { label: "Green", color: "#22c55e" },
-                { label: "Yellow", color: "#eab308" },
-                { label: "Red", color: "#ef4444" },
-                { label: "White", color: "#ffffff" },
-              ].map(s => (
-                <button
-                  key={s.color}
-                  title={s.label}
-                  onClick={() => setValues(p => ({ ...p, hero_highlight_color: s.color }))}
-                  className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${values["hero_highlight_color"] === s.color ? "border-gray-800 scale-110" : "border-gray-200"}`}
-                  style={{ background: s.color }}
-                />
-              ))}
-            </div>
-            {/* Live preview */}
-            <div className="ml-auto text-right">
-              <p className="text-xs text-gray-400 mb-1">Preview</p>
+        <div className="p-6 space-y-5">
+          {/* 3 colour pickers */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { key: "hero_color1", label: "Colour 1 (Start)", default: "#9333ea" },
+              { key: "hero_color2", label: "Colour 2 (Middle)", default: "#2563eb" },
+              { key: "hero_color3", label: "Colour 3 (End)",   default: "#06b6d4" },
+            ].map(c => (
+              <div key={c.key}>
+                <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">{c.label}</label>
+                <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl border-2 border-gray-200 focus-within:border-purple-500 bg-white transition-all">
+                  <input
+                    type="color"
+                    value={values[c.key] || c.default}
+                    onChange={e => setValues(p => ({ ...p, [c.key]: e.target.value }))}
+                    className="w-9 h-9 rounded-lg cursor-pointer border-0 bg-transparent p-0 shrink-0"
+                  />
+                  <input
+                    type="text"
+                    value={values[c.key] || c.default}
+                    onChange={e => setValues(p => ({ ...p, [c.key]: e.target.value }))}
+                    placeholder={c.default}
+                    className="flex-1 text-sm focus:outline-none font-mono text-gray-900 bg-transparent min-w-0"
+                  />
+                </div>
+                {/* Quick swatches */}
+                <div className="flex gap-1.5 mt-2 flex-wrap">
+                  {["#9333ea","#2563eb","#06b6d4","#f97316","#ec4899","#22c55e","#eab308","#ef4444","#ffffff"].map(col => (
+                    <button key={col} title={col}
+                      onClick={() => setValues(p => ({ ...p, [c.key]: col }))}
+                      className={`w-6 h-6 rounded-full border-2 transition-transform hover:scale-110 ${values[c.key] === col ? "border-gray-800 scale-110" : "border-gray-200"}`}
+                      style={{ background: col }}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Live gradient preview */}
+          <div>
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Live Preview</p>
+            <div className="px-6 py-4 rounded-xl bg-gray-900 text-center">
               <span
-                className="text-2xl font-black"
-                style={{ color: values["hero_highlight_color"] || "#0b78d2" }}
+                className="text-3xl font-black text-transparent bg-clip-text"
+                style={{
+                  backgroundImage: `linear-gradient(90deg, ${values["hero_color1"] || "#9333ea"} 0%, ${values["hero_color2"] || "#2563eb"} 50%, ${values["hero_color3"] || "#06b6d4"} 100%)`,
+                  WebkitBackgroundClip: "text",
+                }}
               >
-                Online &amp; Beyond
+                BUILD YOUR THOUGHTS
               </span>
             </div>
           </div>
@@ -211,7 +229,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
           <button
             onClick={() => handleSaveGroup("stats")}
             disabled={saving["stats"]}
-            className={`px-5 py-2 rounded-xl text-sm font-bold transition-colors ${saved["stats"] ? "bg-green-500 text-white" : "bg-cyan-600 text-white hover:bg-cyan-700"} disabled:opacity-60`}
+            className={`px-5 py-2 rounded-xl text-sm font-bold transition-colors ${saved["stats"] ? "bg-green-500 text-white" : "bg-purple-600 text-white hover:bg-purple-700"} disabled:opacity-60`}
           >
             {saving["stats"] ? "Saving…" : saved["stats"] ? "✓ Saved" : "Save All Stats"}
           </button>
@@ -229,7 +247,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{stat.label}</span>
               </div>
               {/* Preview */}
-              <div className="text-3xl font-black text-cyan-600 mb-3">
+              <div className="text-3xl font-black text-purple-600 mb-3">
                 {values[stat.numKey] || "0"}{values[stat.suffixKey] || "+"}
               </div>
               <div className="flex gap-2">
@@ -239,7 +257,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                     type="number"
                     value={values[stat.numKey] || ""}
                     onChange={e => setValues(p => ({ ...p, [stat.numKey]: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm font-bold"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm font-bold text-gray-900 bg-white"
                     min="0"
                   />
                 </div>
@@ -249,7 +267,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                     type="text"
                     value={values[stat.suffixKey] || ""}
                     onChange={e => setValues(p => ({ ...p, [stat.suffixKey]: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm font-bold text-center"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm font-bold text-center text-gray-900 bg-white"
                     maxLength={3}
                     placeholder="+"
                   />
@@ -273,18 +291,18 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
               { valKey: "whyus_stat4_val", labelKey: "whyus_stat4_label", color: "pink" },
             ].map((stat, i) => (
               <div key={stat.valKey} className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <div className="text-2xl font-black text-cyan-600 mb-2">{values[stat.valKey] || "—"}</div>
+                <div className="text-2xl font-black text-purple-600 mb-2">{values[stat.valKey] || "—"}</div>
                 <div className="text-xs text-gray-500 mb-3">{values[stat.labelKey] || "—"}</div>
                 <div className="space-y-2">
                   <div>
                     <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Value</label>
                     <input type="text" value={values[stat.valKey] || ""} onChange={e => setValues(p => ({ ...p, [stat.valKey]: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm font-bold" placeholder="99%" />
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm font-bold text-gray-900 bg-white" placeholder="99%" />
                   </div>
                   <div>
                     <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Label</label>
                     <input type="text" value={values[stat.labelKey] || ""} onChange={e => setValues(p => ({ ...p, [stat.labelKey]: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm" placeholder="Satisfaction" />
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm" placeholder="Satisfaction" />
                   </div>
                 </div>
               </div>
@@ -300,7 +318,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
               <div key={n}>
                 <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Point {n}</label>
                 <input type="text" value={values[`whyus_point${n}`] || ""} onChange={e => setValues(p => ({ ...p, [`whyus_point${n}`]: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm" />
+                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm" />
               </div>
             ))}
           </div>
@@ -317,18 +335,18 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
               { valKey: "proj_stat4_val", labelKey: "proj_stat4_label" },
             ].map((stat, i) => (
               <div key={stat.valKey} className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <div className="text-2xl font-black text-cyan-600 mb-2">{values[stat.valKey] || "—"}</div>
+                <div className="text-2xl font-black text-purple-600 mb-2">{values[stat.valKey] || "—"}</div>
                 <div className="text-xs text-gray-500 mb-3">{values[stat.labelKey] || "—"}</div>
                 <div className="space-y-2">
                   <div>
                     <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Value</label>
                     <input type="text" value={values[stat.valKey] || ""} onChange={e => setValues(p => ({ ...p, [stat.valKey]: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm font-bold" />
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm font-bold text-gray-900 bg-white" />
                   </div>
                   <div>
                     <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Label</label>
                     <input type="text" value={values[stat.labelKey] || ""} onChange={e => setValues(p => ({ ...p, [stat.labelKey]: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm" />
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm" />
                   </div>
                 </div>
               </div>
@@ -345,7 +363,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
               const meta = groupLabels[g] || { icon: "⚙️", title: g };
               return (
                 <button key={g} onClick={() => setActiveGroup(g)}
-                  className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-left border-b border-gray-50 last:border-0 transition-colors ${activeGroup === g ? "bg-cyan-50 text-cyan-700 font-bold" : "text-gray-600 hover:bg-gray-50"}`}>
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-left border-b border-gray-50 last:border-0 transition-colors ${activeGroup === g ? "bg-purple-50 text-purple-700 font-bold" : "text-gray-600 hover:bg-gray-50"}`}>
                   <span>{meta.icon}</span>
                   <span>{meta.title}</span>
                 </button>
@@ -353,7 +371,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
             })}
             {/* Assets tab */}
             <button onClick={() => setActiveGroup("assets")}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-left border-b border-gray-50 last:border-0 transition-colors ${activeGroup === "assets" ? "bg-cyan-50 text-cyan-700 font-bold" : "text-gray-600 hover:bg-gray-50"}`}>
+              className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-left border-b border-gray-50 last:border-0 transition-colors ${activeGroup === "assets" ? "bg-purple-50 text-purple-700 font-bold" : "text-gray-600 hover:bg-gray-50"}`}>
               <span>🖼️</span>
               <span>Site Images</span>
             </button>
@@ -369,19 +387,19 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                 {groupLabels[activeGroup]?.icon} {groupLabels[activeGroup]?.title || activeGroup}
               </h2>
               <button onClick={() => handleSaveGroup(activeGroup)} disabled={saving[activeGroup]}
-                className={`px-5 py-2 rounded-xl text-sm font-bold transition-colors ${saved[activeGroup] ? "bg-green-500 text-white" : "bg-cyan-600 text-white hover:bg-cyan-700"} disabled:opacity-60`}>
+                className={`px-5 py-2 rounded-xl text-sm font-bold transition-colors ${saved[activeGroup] ? "bg-green-500 text-white" : "bg-purple-600 text-white hover:bg-purple-700"} disabled:opacity-60`}>
                 {saving[activeGroup] ? "Saving…" : saved[activeGroup] ? "✓ All Saved" : "Save All"}
               </button>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 [color-scheme:light]">
               {groupItems.map(item => (
                 <div key={item.key}>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5">{item.label}</label>
 
                   {item.type === "color" ? (
                     <div className="flex gap-3 items-center">
-                      <div className="relative flex items-center gap-2 flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200 focus-within:border-cyan-500 transition-all bg-white">
+                      <div className="relative flex items-center gap-2 flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200 focus-within:border-purple-500 transition-all bg-white">
                         <input
                           type="color"
                           value={values[item.key] || "#0b78d2"}
@@ -394,11 +412,11 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                           onChange={e => setValues(p => ({ ...p, [item.key]: e.target.value }))}
                           onKeyDown={e => e.key === "Enter" && handleSave(item.key)}
                           placeholder="#000000"
-                          className="flex-1 text-sm focus:outline-none font-mono"
+                          className="flex-1 text-sm focus:outline-none font-mono text-gray-900"
                         />
                         <div className="w-6 h-6 rounded-full border border-gray-200 shrink-0" style={{ background: values[item.key] || "#0b78d2" }} />                      </div>
                       <button onClick={() => handleSave(item.key)} disabled={saving[item.key]}
-                        className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${saved[item.key] ? "bg-green-500 text-white" : "bg-cyan-600 text-white hover:bg-cyan-700"} disabled:opacity-60`}>
+                        className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${saved[item.key] ? "bg-green-500 text-white" : "bg-purple-600 text-white hover:bg-purple-700"} disabled:opacity-60`}>
                         {saving[item.key] ? "…" : saved[item.key] ? "✓" : "Save"}
                       </button>
                     </div>
@@ -410,7 +428,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                           setValues(p => ({ ...p, [item.key]: newVal }));
                           setTimeout(() => handleSave(item.key), 100);
                         }}
-                        className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${values[item.key] === "true" ? "bg-cyan-600" : "bg-gray-300"}`}>
+                        className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${values[item.key] === "true" ? "bg-purple-600" : "bg-gray-300"}`}>
                         <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-300 ${values[item.key] === "true" ? "translate-x-6" : "translate-x-0"}`} />
                       </button>
                       <span className="text-sm text-gray-600">{values[item.key] === "true" ? "Enabled" : "Disabled"}</span>
@@ -421,10 +439,10 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                         value={values[item.key] || ""}
                         onChange={e => setValues(p => ({ ...p, [item.key]: e.target.value }))}
                         rows={3}
-                        className="flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm resize-none transition-all"
+                        className="flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm resize-none transition-all text-gray-900 bg-white"
                       />
                       <button onClick={() => handleSave(item.key)} disabled={saving[item.key]}
-                        className={`px-4 py-2 rounded-xl text-sm font-bold self-start transition-colors ${saved[item.key] ? "bg-green-500 text-white" : "bg-cyan-600 text-white hover:bg-cyan-700"} disabled:opacity-60`}>
+                        className={`px-4 py-2 rounded-xl text-sm font-bold self-start transition-colors ${saved[item.key] ? "bg-green-500 text-white" : "bg-purple-600 text-white hover:bg-purple-700"} disabled:opacity-60`}>
                         {saving[item.key] ? "…" : saved[item.key] ? "✓" : "Save"}
                       </button>
                     </div>
@@ -436,10 +454,10 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                         onChange={e => setValues(p => ({ ...p, [item.key]: e.target.value }))}
                         onKeyDown={e => e.key === "Enter" && handleSave(item.key)}
                         placeholder={item.type === "url" ? "https://..." : ""}
-                        className="flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm transition-all"
+                        className="flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm transition-all text-gray-900 bg-white"
                       />
                       <button onClick={() => handleSave(item.key)} disabled={saving[item.key]}
-                        className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${saved[item.key] ? "bg-green-500 text-white" : "bg-cyan-600 text-white hover:bg-cyan-700"} disabled:opacity-60`}>
+                        className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${saved[item.key] ? "bg-green-500 text-white" : "bg-purple-600 text-white hover:bg-purple-700"} disabled:opacity-60`}>
                         {saving[item.key] ? "…" : saved[item.key] ? "✓" : "Save"}
                       </button>
                     </div>
@@ -460,7 +478,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                 <h2 className="font-bold text-gray-800">🖼️ Site Images</h2>
                 <p className="text-xs text-gray-400 mt-1">Upload images to Cloudinary — changes reflect on the website immediately</p>
               </div>
-              <div className="p-6 space-y-6">
+              <div className="p-6 space-y-6 [color-scheme:light]">
                 {assetFields.map(field => (
                   <div key={field.key}>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">{field.label}</label>
@@ -489,7 +507,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                         <button
                           onClick={() => fileRefs.current[field.key]?.click()}
                           disabled={assetSaving[field.key]}
-                          className="px-5 py-2.5 rounded-xl bg-cyan-600 text-white text-sm font-bold hover:bg-cyan-700 disabled:opacity-60 transition-colors"
+                          className="px-5 py-2.5 rounded-xl bg-purple-600 text-white text-sm font-bold hover:bg-purple-700 disabled:opacity-60 transition-colors"
                         >
                           {assetSaving[field.key] ? "Uploading…" : assets[field.key] ? "Replace Image" : "Upload Image"}
                         </button>

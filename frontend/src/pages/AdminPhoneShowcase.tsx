@@ -127,7 +127,7 @@ export default function AdminPhoneShowcase() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50 font-sans">
+    <div className="admin-page flex min-h-screen bg-gray-50 font-sans">
       <AdminSidebar active="Phone Showcase" />
 
       <main className="lg:ml-56 flex-1 p-4 md:p-6 pt-16 lg:pt-6 min-w-0">
@@ -136,7 +136,7 @@ export default function AdminPhoneShowcase() {
             <h1 className="text-xl md:text-2xl font-black text-gray-900">Phone Showcase</h1>
             <p className="text-gray-500 text-sm mt-1">Manage images displayed inside phone mockups</p>
           </div>
-          <button onClick={openAdd} className="px-3 md:px-5 py-2 md:py-2.5 rounded-xl bg-cyan-600 text-white font-bold text-xs md:text-sm hover:bg-cyan-700 shrink-0">
+          <button onClick={openAdd} className="px-3 md:px-5 py-2 md:py-2.5 rounded-xl bg-purple-600 text-white font-bold text-xs md:text-sm hover:bg-purple-700 shrink-0">
             + Add Image
           </button>
         </div>
@@ -174,7 +174,7 @@ export default function AdminPhoneShowcase() {
                   {item.label && <p className="text-xs text-gray-500 truncate mb-2">{item.label}</p>}
                   <div className="flex gap-1.5">
                     <button onClick={() => openEdit(item)}
-                      className="flex-1 py-1.5 rounded-lg bg-cyan-50 text-cyan-700 text-xs font-bold hover:bg-cyan-100 transition-colors">
+                      className="flex-1 py-1.5 rounded-lg bg-cyan-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors">
                       Edit
                     </button>
                     <button onClick={() => handleDelete(item._id)}
@@ -247,7 +247,7 @@ export default function AdminPhoneShowcase() {
                     <button key={c} type="button"
                       onClick={() => setForm(f => ({ ...f, color: c }))}
                       className={`flex-1 py-2 rounded-xl text-sm font-bold capitalize border-2 transition-all ${
-                        form.color === c ? "border-cyan-500 bg-cyan-50 text-cyan-700" : "border-gray-200 text-gray-500 hover:border-gray-300"
+                        form.color === c ? "border-purple-500 bg-cyan-50 text-purple-700" : "border-gray-200 text-gray-500 hover:border-gray-300"
                       }`}
                     >
                       <span className={`inline-block w-2.5 h-2.5 rounded-full mr-1.5 ${colorDot[c]}`} />
@@ -287,7 +287,7 @@ export default function AdminPhoneShowcase() {
                   Cancel
                 </button>
                 <button type="submit" disabled={saving}
-                  className="flex-1 py-2.5 rounded-xl bg-cyan-600 text-white font-bold text-sm hover:bg-cyan-700 disabled:opacity-60">
+                  className="flex-1 py-2.5 rounded-xl bg-purple-600 text-white font-bold text-sm hover:bg-purple-700 disabled:opacity-60">
                   {saving ? "Saving..." : editItem ? "Update" : "Add Image"}
                 </button>
               </div>

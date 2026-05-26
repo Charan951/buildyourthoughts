@@ -75,7 +75,25 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     window.addEventListener(SITE_DATA_UPDATED, onUpdate);
-    return () => window.removeEventListener(SITE_DATA_UPDATED, onUpdate);
+
+    // Cross-tab sync — listen for localStorage changes from admin tab
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== "site_data_updated" || !e.newValue) return;
+      try {
+        const { scope } = JSON.parse(e.newValue) as { scope: SiteDataScope };
+        if (scope === "all" || scope === "settings") refetchSettings();
+        if (scope === "all" || scope === "content") refetchContent();
+        if (scope === "all" || scope === "assets") {
+          window.dispatchEvent(new Event(ASSETS_INVALIDATE_EVENT));
+        }
+      } catch {}
+    };
+    window.addEventListener("storage", onStorage);
+
+    return () => {
+      window.removeEventListener(SITE_DATA_UPDATED, onUpdate);
+      window.removeEventListener("storage", onStorage);
+    };
   }, [refetchSettings, refetchContent]);
 
   const s = (key: string, fallback: string) => settings[key] || fallback;

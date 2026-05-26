@@ -1,1 +1,16 @@
-/* App-level overrides — keep minimal */
+/* ── Admin dashboard — force light mode regardless of theme ── */
+.admin-page,
+.admin-page * {
+  color-scheme: light !important;
+}
+.admin-page input,
+.admin-page textarea,
+.admin-page select {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+}
+.admin-page input::placeholder,
+.admin-page textarea::placeholder {
+  color: #9ca3af !important;
+}

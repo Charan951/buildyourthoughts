@@ -40,6 +40,7 @@ exports.create = async (req, res) => {
       order: order || 0,
       image,
       imagePublicId,
+      highlightGradient: req.body.highlightGradient || "purple-blue-cyan-orange",
     });
     res.status(201).json(slide);
   } catch (err) {
@@ -52,7 +53,7 @@ exports.update = async (req, res) => {
     const existing = await CarouselSlide.findById(req.params.id);
     if (!existing) return res.status(404).json({ message: "Not found" });
     const { badge, title, highlight, desc, ctaText, ctaLink, cta2Text, cta2Link, order, isActive } = req.body;
-    const updates = { badge, title, highlight, desc, ctaText, ctaLink, cta2Text, cta2Link, order, isActive: isActive === "true" || isActive === true };
+    const updates = { badge, title, highlight, desc, ctaText, ctaLink, cta2Text, cta2Link, order, isActive: isActive === "true" || isActive === true, highlightGradient: req.body.highlightGradient || existing.highlightGradient || "purple-blue-cyan-orange" };
     if (req.file) {
       if (existing.imagePublicId) await cloudinary.uploader.destroy(existing.imagePublicId).catch(() => {});
       const result = await uploadToCloudinary(req.file.buffer, {

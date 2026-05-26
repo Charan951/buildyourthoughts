@@ -40,7 +40,11 @@ exports.updateBulk = async (req, res) => {
     const updates = req.body;
     const results = [];
     for (const [key, value] of Object.entries(updates)) {
-      const item = await Settings.findOneAndUpdate({ key }, { value }, { new: true });
+      const item = await Settings.findOneAndUpdate(
+        { key },
+        { value },
+        { new: true, upsert: true }   // upsert — create if not exists
+      );
       if (item) results.push(item);
     }
     res.json({ updated: results.length });

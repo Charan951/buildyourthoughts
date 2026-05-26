@@ -12,9 +12,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Times New Roman", "serif"],
-        heading: ["Times New Roman", "serif"],
-        condensed: ["Times New Roman", "serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        heading: ["Playfair Display", "Georgia", "serif"],
+        condensed: ["Inter", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -3,70 +3,70 @@
 @tailwind utilities;
 
 @layer base {
-  /* Dark theme — professional midnight blue with cyan highlights */
+  /* Dark theme — logo color palette: purple, blue, cyan, orange */
   :root,
   :root.dark {
-    --background: 214 38% 8%;
-    --foreground: 210 18% 96%;
-    --card: 214 28% 11%;
-    --card-foreground: 210 18% 96%;
-    --popover: 214 28% 11%;
-    --popover-foreground: 210 18% 96%;
-    --primary: 187 95% 55%;
+    --background: 225 39% 7%;
+    --foreground: 210 20% 95%;
+    --card: 224 32% 10%;
+    --card-foreground: 210 20% 95%;
+    --popover: 224 32% 10%;
+    --popover-foreground: 210 20% 95%;
+    --primary: 271 91% 55%;          /* purple #9333ea */
     --primary-foreground: 0 0% 100%;
-    --secondary: 193 100% 42%;
+    --secondary: 217 91% 53%;        /* blue #2563eb */
     --secondary-foreground: 0 0% 100%;
-    --muted: 218 18% 12%;
-    --muted-foreground: 210 24% 74%;
-    --accent: 181 95% 55%;
+    --muted: 224 22% 13%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 192 91% 44%;           /* cyan/teal #06b6d4 */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 217 18% 18%;
-    --input: 217 18% 14%;
-    --ring: 187 95% 55%;
+    --border: 224 20% 16%;
+    --input: 224 20% 13%;
+    --ring: 271 91% 55%;
     --radius: 0.75rem;
 
-    --sidebar-background: 214 34% 10%;
-    --sidebar-foreground: 210 18% 96%;
-    --sidebar-primary: 187 95% 55%;
+    --sidebar-background: 225 35% 9%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 271 91% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 214 18% 12%;
-    --sidebar-accent-foreground: 210 18% 96%;
-    --sidebar-border: 217 18% 18%;
-    --sidebar-ring: 187 95% 55%;
+    --sidebar-accent: 224 22% 13%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 224 20% 16%;
+    --sidebar-ring: 271 91% 55%;
   }
 
-  /* Light theme — clean white surfaces, readable blue/cyan text */
+  /* Light theme */
   :root.light {
     --background: 210 20% 97%;
-    --foreground: 214 14% 14%;
+    --foreground: 224 30% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 214 14% 14%;
+    --card-foreground: 224 30% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 214 14% 14%;
-    --primary: 187 95% 55%;
+    --popover-foreground: 224 30% 12%;
+    --primary: 271 91% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 196 100% 38%;
+    --secondary: 217 91% 53%;
     --secondary-foreground: 0 0% 100%;
     --muted: 210 30% 94%;
-    --muted-foreground: 214 12% 28%;
-    --accent: 181 95% 55%;
+    --muted-foreground: 224 12% 35%;
+    --accent: 192 91% 44%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 214 18% 85%;
     --input: 214 18% 92%;
-    --ring: 187 95% 55%;
+    --ring: 271 91% 55%;
 
     --sidebar-background: 210 20% 96%;
-    --sidebar-foreground: 214 14% 14%;
-    --sidebar-primary: 187 95% 55%;
+    --sidebar-foreground: 224 30% 12%;
+    --sidebar-primary: 271 91% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 24% 92%;
-    --sidebar-accent-foreground: 214 14% 14%;
+    --sidebar-accent-foreground: 224 30% 12%;
     --sidebar-border: 214 18% 85%;
-    --sidebar-ring: 187 95% 55%;
+    --sidebar-ring: 271 91% 55%;
   }
 }
 
@@ -83,7 +83,7 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: "Times New Roman", serif;
+    font-family: "Inter", system-ui, sans-serif;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -104,7 +104,7 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: "Times New Roman", serif;
+    font-family: "Inter", system-ui, sans-serif;
     overflow-x: hidden;
     overscroll-behavior-y: none;
   }
@@ -179,10 +179,10 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-secondary;
-  }
-  :root.light .text-gradient {
-    @apply from-primary via-primary to-secondary;
+    background: linear-gradient(90deg, #9333ea 0%, #2563eb 35%, #06b6d4 65%, #f97316 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   .glass {
     @apply border border-border;
@@ -555,12 +555,13 @@
   .animate-spin-slow { animation: spin-slow 12s linear infinite; will-change: transform; }
   .animate-counter-spin { animation: counter-spin 8s linear infinite; will-change: transform; }
   .animate-ping-slow { animation: ping-slow 2s ease-out infinite; will-change: transform, opacity; }
+  .animation-delay-300 { animation-delay: 300ms; }
   .animate-card-rise { animation: card-rise 0.6s var(--ease-out-expo) forwards; will-change: transform, opacity; }
   .animate-line-grow { animation: line-grow 0.8s var(--ease-out-expo) forwards; will-change: transform; }
   .animate-orbit { animation: orbit 6s linear infinite; will-change: transform; }
 
   .text-shimmer {
-    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)), hsl(var(--primary)));
+    background: linear-gradient(90deg, #9333ea, #2563eb, #06b6d4, #f97316, #9333ea);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

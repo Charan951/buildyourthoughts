@@ -7,11 +7,37 @@ interface Slide {
   _id: string; badge: string; title: string; highlight: string; desc: string;
   ctaText: string; ctaLink: string; cta2Text: string; cta2Link: string;
   image: string; isActive: boolean; order: number;
+  highlightGradient: string;
 }
 
 const API = "/api";
 const getToken = () => localStorage.getItem("speshway_admin_token");
-const emptyForm = { badge: "", title: "", highlight: "", desc: "", ctaText: "Learn More", ctaLink: "/services", cta2Text: "Contact Us", cta2Link: "/contact", order: "0" };
+
+const emptyForm = {
+  badge: "", title: "", highlight: "", desc: "",
+  ctaText: "Learn More", ctaLink: "/services",
+  cta2Text: "Contact Us", cta2Link: "/contact",
+  order: "0", highlightGradient: "purple-blue-cyan-orange",
+};
+
+// Gradient presets — key stored in DB, value used as CSS gradient
+export const GRADIENT_PRESETS: { key: string; label: string; gradient: string }[] = [
+  { key: "purple-blue-cyan-orange", label: "Logo Colors",        gradient: "linear-gradient(90deg,#9333ea 0%,#2563eb 30%,#06b6d4 60%,#f97316 100%)" },
+  { key: "purple-pink",             label: "Purple → Pink",      gradient: "linear-gradient(90deg,#9333ea 0%,#ec4899 100%)" },
+  { key: "blue-cyan",               label: "Blue → Cyan",        gradient: "linear-gradient(90deg,#2563eb 0%,#06b6d4 100%)" },
+  { key: "orange-yellow",           label: "Orange → Yellow",    gradient: "linear-gradient(90deg,#f97316 0%,#eab308 100%)" },
+  { key: "green-teal",              label: "Green → Teal",       gradient: "linear-gradient(90deg,#16a34a 0%,#06b6d4 100%)" },
+  { key: "red-orange",              label: "Red → Orange",       gradient: "linear-gradient(90deg,#dc2626 0%,#f97316 100%)" },
+  { key: "pink-purple-blue",        label: "Pink → Purple → Blue", gradient: "linear-gradient(90deg,#ec4899 0%,#9333ea 50%,#2563eb 100%)" },
+  { key: "gold-white",              label: "Gold → White",       gradient: "linear-gradient(90deg,#f59e0b 0%,#fef9c3 60%,#ffffff 100%)" },
+  { key: "cyan-white",              label: "Cyan → White",       gradient: "linear-gradient(90deg,#06b6d4 0%,#e0f2fe 100%)" },
+  { key: "white",                   label: "Pure White",         gradient: "linear-gradient(90deg,#ffffff 0%,#e2e8f0 100%)" },
+];
+
+export function getGradientCss(key: string): string {
+  return GRADIENT_PRESETS.find(p => p.key === key)?.gradient
+    ?? "linear-gradient(90deg,#9333ea 0%,#2563eb 30%,#06b6d4 60%,#f97316 100%)";
+}
 
 export default function AdminCarousel() {
   const navigate = useNavigate();
@@ -42,7 +68,12 @@ export default function AdminCarousel() {
 
   const openEdit = (s: Slide) => {
     setEditSlide(s);
-    setForm({ badge: s.badge, title: s.title, highlight: s.highlight, desc: s.desc, ctaText: s.ctaText, ctaLink: s.ctaLink, cta2Text: s.cta2Text, cta2Link: s.cta2Link, order: String(s.order) });
+    setForm({
+      badge: s.badge, title: s.title, highlight: s.highlight, desc: s.desc,
+      ctaText: s.ctaText, ctaLink: s.ctaLink, cta2Text: s.cta2Text, cta2Link: s.cta2Link,
+      order: String(s.order),
+      highlightGradient: s.highlightGradient || "purple-blue-cyan-orange",
+    });
     setImageFile(null); setImagePreview(s.image || ""); setError(""); setShowModal(true);
   };
 
@@ -59,11 +90,7 @@ export default function AdminCarousel() {
       });
       if (!res.ok) { const d = await res.json(); throw new Error(d.message); }
       const saved = await res.json();
-      if (editSlide) {
-        setSlides(prev => prev.map(s => s._id === saved._id ? saved : s));
-      } else {
-        setSlides(prev => [...prev, saved]);
-      }
+      setSlides(prev => editSlide ? prev.map(s => s._id === saved._id ? saved : s) : [...prev, saved]);
       setShowModal(false);
       notifySiteDataUpdated("carousel");
     } catch (err: unknown) { setError(err instanceof Error ? err.message : "Failed"); }
@@ -72,31 +99,24 @@ export default function AdminCarousel() {
 
   const handleToggle = async (id: string) => {
     try {
-      const res = await fetch(`${API}/carousel/${id}/toggle`, {
-        method: "PATCH",
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
+      const res = await fetch(`${API}/carousel/${id}/toggle`, { method: "PATCH", headers: { Authorization: `Bearer ${getToken()}` } });
       if (!res.ok) throw new Error("Toggle failed");
       const saved = await res.json();
       setSlides(prev => prev.map(s => s._id === saved._id ? saved : s));
       notifySiteDataUpdated("carousel");
-    } catch (err) {
-      alert("Failed to toggle slide. Make sure the backend is running.");
-    }
+    } catch { alert("Failed to toggle slide."); }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this slide?")) return;
     const res = await fetch(`${API}/carousel/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${getToken()}` } });
-    if (res.ok) {
-      setSlides(prev => prev.filter(s => s._id !== id));
-      notifySiteDataUpdated("carousel");
-    }
+    if (res.ok) { setSlides(prev => prev.filter(s => s._id !== id)); notifySiteDataUpdated("carousel"); }
   };
 
+  const selectedGradient = getGradientCss(form.highlightGradient);
+
   return (
-    <div className="flex min-h-screen bg-gray-50 font-sans">
-      {/* Sidebar */}
+    <div className="admin-page flex min-h-screen bg-gray-50 font-sans">
       <AdminSidebar active="Carousel" />
 
       <main className="lg:ml-56 flex-1 p-4 md:p-6 pt-16 lg:pt-6 min-w-0">
@@ -105,7 +125,7 @@ export default function AdminCarousel() {
             <h1 className="text-xl md:text-2xl font-black text-gray-900">Carousel Slides</h1>
             <p className="text-gray-400 text-sm mt-1">Manage hero carousel — add, edit, toggle, delete</p>
           </div>
-          <button onClick={openAdd} className="flex items-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl bg-cyan-600 text-white text-xs md:text-sm font-bold hover:bg-cyan-700 shrink-0">
+          <button onClick={openAdd} className="flex items-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl bg-purple-600 text-white text-xs md:text-sm font-bold hover:bg-purple-700 shrink-0">
             + Add Slide
           </button>
         </div>
@@ -114,23 +134,28 @@ export default function AdminCarousel() {
           {slides.map((s) => (
             <div key={s._id} className={`bg-white rounded-2xl border p-4 md:p-5 transition-all ${s.isActive ? "border-gray-100 shadow-sm" : "border-gray-200 opacity-60"}`}>
               <div className="flex gap-3 md:gap-5 items-start">
-                {/* Image preview */}
                 <div className="w-20 h-14 md:w-32 md:h-20 rounded-xl overflow-hidden bg-gray-100 shrink-0">
                   {s.image ? <img src={s.image} alt="" className="w-full h-full object-cover" /> : (
                     <div className="w-full h-full flex items-center justify-center text-gray-300 text-xl">🖼️</div>
                   )}
                 </div>
-                {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest truncate">{s.badge}</span>
+                    <span className="text-[10px] font-bold text-purple-500 uppercase tracking-widest truncate">{s.badge}</span>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0 ${s.isActive ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-500"}`}>
                       {s.isActive ? "Active" : "Inactive"}
                     </span>
                   </div>
-                  <h3 className="font-bold text-gray-800 text-sm truncate">{s.title} <span className="text-cyan-500">{s.highlight}</span></h3>
+                  <h3 className="font-bold text-gray-800 text-sm">
+                    {s.title}{" "}
+                    <span
+                      className="text-transparent bg-clip-text"
+                      style={{ backgroundImage: getGradientCss(s.highlightGradient), WebkitBackgroundClip: "text" }}
+                    >
+                      {s.highlight}
+                    </span>
+                  </h3>
                   <p className="text-gray-500 text-xs mt-1 line-clamp-2 hidden sm:block">{s.desc}</p>
-                  {/* Actions inline on mobile */}
                   <div className="flex gap-2 mt-2 md:hidden">
                     <button onClick={() => handleToggle(s._id)} className={`px-2.5 py-1 rounded-lg text-xs font-bold ${s.isActive ? "bg-yellow-50 text-yellow-600" : "bg-green-50 text-green-600"}`}>
                       {s.isActive ? "Stop" : "Start"}
@@ -139,7 +164,6 @@ export default function AdminCarousel() {
                     <button onClick={() => handleDelete(s._id)} className="px-2.5 py-1 rounded-lg bg-red-50 text-red-600 text-xs font-bold">Del</button>
                   </div>
                 </div>
-                {/* Actions — desktop only */}
                 <div className="hidden md:flex flex-col gap-2 shrink-0">
                   <button onClick={() => handleToggle(s._id)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${s.isActive ? "bg-yellow-50 text-yellow-600 hover:bg-yellow-100" : "bg-green-50 text-green-600 hover:bg-green-100"}`}>
                     {s.isActive ? "⏸ Stop" : "▶ Start"}
@@ -167,12 +191,49 @@ export default function AdminCarousel() {
               <CField label="Badge Text *" value={form.badge} onChange={v => setForm(f => ({ ...f, badge: v }))} required placeholder="Welcome to the Future of IT" />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <CField label="Title *" value={form.title} onChange={v => setForm(f => ({ ...f, title: v }))} required placeholder="Build Your Digital Future" />
-                <CField label="Highlight (colored) *" value={form.highlight} onChange={v => setForm(f => ({ ...f, highlight: v }))} required placeholder="BUILD YOUR THOUGHTS" />
+                <CField label="Highlight Text *" value={form.highlight} onChange={v => setForm(f => ({ ...f, highlight: v }))} required placeholder="BUILD YOUR THOUGHTS" />
               </div>
+
+              {/* Gradient Picker */}
+              <div>
+                <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+                  Highlight Colour Combination
+                </label>
+                {/* Live preview */}
+                <div className="mb-3 px-4 py-3 rounded-xl bg-gray-900 text-center">
+                  <span
+                    className="text-xl font-black text-transparent bg-clip-text"
+                    style={{ backgroundImage: selectedGradient, WebkitBackgroundClip: "text" }}
+                  >
+                    {form.highlight || "PREVIEW TEXT"}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {GRADIENT_PRESETS.map(p => (
+                    <button
+                      key={p.key}
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, highlightGradient: p.key }))}
+                      className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 text-xs font-bold transition-all ${
+                        form.highlightGradient === p.key
+                          ? "border-purple-500 bg-purple-50 text-purple-700"
+                          : "border-gray-200 hover:border-gray-300 text-gray-600"
+                      }`}
+                    >
+                      <span
+                        className="w-6 h-4 rounded shrink-0"
+                        style={{ background: p.gradient }}
+                      />
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div>
                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Description *</label>
                 <textarea value={form.desc} onChange={e => setForm(f => ({ ...f, desc: e.target.value }))} required rows={2}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm resize-none" />
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm text-gray-900 bg-white resize-none text-gray-900 bg-white" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <CField label="CTA Button Text" value={form.ctaText} onChange={v => setForm(f => ({ ...f, ctaText: v }))} placeholder="Learn More" />
@@ -184,10 +245,9 @@ export default function AdminCarousel() {
               </div>
               <CField label="Order" value={form.order} onChange={v => setForm(f => ({ ...f, order: v }))} type="number" />
 
-              {/* Image upload */}
               <div>
                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Background Image</label>
-                <div onClick={() => fileRef.current?.click()} className="border-2 border-dashed border-gray-200 rounded-xl p-5 text-center cursor-pointer hover:border-cyan-400 transition-colors">
+                <div onClick={() => fileRef.current?.click()} className="border-2 border-dashed border-gray-200 rounded-xl p-5 text-center cursor-pointer hover:border-purple-400 transition-colors">
                   {imagePreview ? (
                     <img src={imagePreview} alt="preview" className="mx-auto max-h-32 rounded-lg object-cover" />
                   ) : (
@@ -198,7 +258,7 @@ export default function AdminCarousel() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={saving} className="flex-1 py-3 rounded-xl bg-cyan-600 text-white font-bold text-sm hover:bg-cyan-700 disabled:opacity-60">
+                <button type="submit" disabled={saving} className="flex-1 py-3 rounded-xl bg-purple-600 text-white font-bold text-sm hover:bg-purple-700 disabled:opacity-60">
                   {saving ? "Saving…" : editSlide ? "Update Slide" : "Create Slide"}
                 </button>
                 <button type="button" onClick={() => setShowModal(false)} className="px-6 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-sm">Cancel</button>
@@ -218,6 +278,6 @@ const CField = ({ label, value, onChange, required, placeholder, type = "text" }
   <div>
     <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">{label}</label>
     <input type={type} value={value} onChange={e => onChange(e.target.value)} required={required} placeholder={placeholder}
-      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm" />
+      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm text-gray-900 bg-white" />
   </div>
 );
