@@ -91,7 +91,7 @@ const Projects = () => {
       {/* Stats */}
       <section className="py-8 md:py-16 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-card/30 to-secondary/5" />
-        <div className="relative container grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8">
           {stats.map((s, i) => (
             <MotionSection key={s.label} delay={i * 0.1} animation="skew-up">
               <div className="text-center glass rounded-xl md:rounded-2xl p-4 md:p-8 hover:glow-border-strong transition-all duration-500 border-border group">
@@ -105,7 +105,7 @@ const Projects = () => {
 
       {/* Projects Grid */}
       <section className="py-10 md:py-24 bg-background relative overflow-hidden">
-        <div className="container relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-8 md:mb-20">
             <MotionSection animation="parallax-reveal">
               <span className="text-primary text-xs md:text-sm font-bold uppercase tracking-[0.3em]">Portfolio</span>
@@ -201,7 +201,7 @@ const Projects = () => {
       {/* CTA */}
       <section className="py-16 md:py-32 relative overflow-hidden bg-background">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-card/50 to-secondary/20" />
-        <MotionSection animation="zoom-out" className="container text-center relative z-10 px-4">
+        <MotionSection animation="zoom-out" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <TextReveal text="Have a Project in Mind?" className="text-2xl md:text-7xl font-heading font-black mb-5 md:mb-8 justify-center leading-tight" />
           <p className="text-muted-foreground mb-8 md:mb-12 max-w-2xl mx-auto text-sm md:text-xl font-light leading-relaxed">
             Let's build something amazing together. Our team is ready to bring your vision to life.

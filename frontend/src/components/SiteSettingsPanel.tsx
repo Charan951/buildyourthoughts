@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { notifySiteDataUpdated } from "@/lib/siteData";
+import { useTheme } from "@/context/ThemeContext";
 
 interface SettingItem {
   _id: string; key: string; label: string; value: string; group: string; type: string;
@@ -26,6 +27,7 @@ const assetFields = [
 ];
 
 export default function SiteSettingsPanel({ admin }: { admin?: { email?: string; role?: string } | null }) {
+  const { theme, setThemeValue } = useTheme();
   const [items, setItems] = useState<SettingItem[]>([]);
   const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState<Record<string, boolean>>({});
@@ -129,6 +131,40 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
           </div>
         </div>
       )}
+
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-bold text-gray-900">Homepage theme</p>
+          <p className="text-xs text-gray-500 mt-1">Use this control to apply the site theme from the admin dashboard.</p>
+        </div>
+        <button
+          type="button"
+          onClick={async () => {
+            const nextTheme = theme === "dark" ? "light" : "dark";
+            setSaving((p) => ({ ...p, site_theme: true }));
+            try {
+              await fetch(`${API}/settings/site_theme`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${getToken()}`,
+                },
+                body: JSON.stringify({ value: nextTheme }),
+              });
+              setThemeValue(nextTheme);
+              setSaved((p) => ({ ...p, site_theme: true }));
+              setTimeout(() => setSaved((p) => ({ ...p, site_theme: false })), 2000);
+            } catch {
+            } finally {
+              setSaving((p) => ({ ...p, site_theme: false }));
+            }
+          }}
+          disabled={saving["site_theme"]}
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-colors ${saved["site_theme"] ? "bg-green-600 text-white" : "bg-purple-600 text-white hover:bg-purple-700"} disabled:opacity-60`}
+        >
+          {saving["site_theme"] ? "Saving…" : saved["site_theme"] ? "Saved" : `Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+        </button>
+      </div>
 
       {/* ── Hero Highlight Gradient ── */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">

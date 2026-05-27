@@ -27,7 +27,7 @@ exports.updateOne = async (req, res) => {
     const item = await Settings.findOneAndUpdate(
       { key: req.params.key },
       { value: req.body.value },
-      { new: true, upsert: true }  // upsert — create if not exists
+      { returnDocument: "after", upsert: true }  // upsert — create if not exists
     );
     res.json(item);
   } catch {
@@ -43,7 +43,7 @@ exports.updateBulk = async (req, res) => {
       const item = await Settings.findOneAndUpdate(
         { key },
         { value },
-        { new: true, upsert: true }   // upsert — create if not exists
+        { returnDocument: "after", upsert: true }   // upsert — create if not exists
       );
       if (item) results.push(item);
     }

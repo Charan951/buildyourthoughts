@@ -17,6 +17,7 @@ export default function AdminSidebar({ active }: { active: string }) {
   const navigate = useNavigate();
   const { logo } = useAssets();
   const [open, setOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   const handleNav = (path: string) => {
     navigate(path);
@@ -53,45 +54,49 @@ export default function AdminSidebar({ active }: { active: string }) {
 
       {/* Sidebar drawer */}
       <aside
-        className={`
-          fixed top-0 left-0 h-full z-[700] w-64 bg-[#1e1b2e] text-white
-          flex flex-col py-5 px-4 shadow-2xl
-          transition-transform duration-300 ease-in-out
-          ${open ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0 lg:w-56 lg:shadow-none
-        `}
+        className={
+          `fixed top-0 left-0 h-full z-[700] bg-[#1e1b2e] text-white flex flex-col py-5 px-4 shadow-2xl transition-transform duration-300 ease-in-out ` +
+          `${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 ` +
+          `${collapsed ? "md:w-20" : "md:w-56"} w-64 lg:w-56 lg:shadow-none`
+        }
       >
         {/* Header row: logo + close button */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <img src={logo} alt="" className="w-8 h-8 object-contain shrink-0" />
-            <span className="font-bold text-sm leading-tight">Speshway Admin</span>
+            <span className={`${collapsed ? "hidden lg:block" : "font-bold text-sm leading-tight"}`}>Speshway Admin</span>
           </div>
-          <button
-            onClick={() => setOpen(false)}
-            className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-purple-300 hover:text-white hover:bg-white/10 transition-colors text-lg"
-            aria-label="Close menu"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCollapsed(c => !c)}
+              className="hidden md:inline-flex lg:hidden items-center justify-center w-9 h-9 rounded-lg bg-white/5 text-white hover:bg-white/10 transition-colors"
+              aria-label="Toggle collapse"
+            >
+              {collapsed ? "›" : "‹"}
+            </button>
+            <button
+              onClick={() => setOpen(false)}
+              className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-purple-300 hover:text-white hover:bg-white/10 transition-colors text-lg"
+              aria-label="Close menu"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Nav items */}
         <nav className="flex flex-col gap-0.5 flex-1 overflow-y-auto">
-          {navItems.map(n => (
-            <button
-              key={n.label}
-              onClick={() => handleNav(n.path)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-left transition-colors w-full ${
-                active === n.label
-                  ? "bg-purple-600/40 text-white"
-                  : "text-purple-300 hover:bg-purple-600/20 hover:text-white"
-              }`}
-            >
-              <span className="text-base shrink-0">{n.icon}</span>
-              <span>{n.label}</span>
-            </button>
-          ))}
+          {navItems.map(n => {
+            const btnClasses = `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-left transition-colors w-full ${
+              active === n.label ? "bg-purple-600/40 text-white" : "text-purple-300 hover:bg-purple-600/20 hover:text-white"
+            } ${collapsed ? "justify-center" : ""}`;
+            return (
+              <button key={n.label} onClick={() => handleNav(n.path)} className={btnClasses}>
+                <span className="text-base shrink-0">{n.icon}</span>
+                <span className={`${collapsed ? "hidden lg:block" : "block"}`}>{n.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         {/* Logout */}

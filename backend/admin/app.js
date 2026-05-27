@@ -1,4 +1,6 @@
-const API = "/api";
+const API = window.location.hostname === "localhost" && window.location.port === "8080"
+  ? "http://localhost:5004/api"
+  : "/api";
 
 // ── Helpers ──────────────────────────────────────────
 const $ = (id) => document.getElementById(id);
@@ -18,6 +20,12 @@ function setSection(name) {
 }
 
 // ── Auth ─────────────────────────────────────────────
+function logoutAndRedirect() {
+  localStorage.removeItem("speshway_token");
+  $("login-error").classList.add("hidden");
+  showPage("login");
+}
+
 async function checkAuth() {
   const t = token();
   if (!t) return showPage("login");
@@ -31,11 +39,10 @@ async function checkAuth() {
     if (data.valid) {
       initDashboard(data.admin);
     } else {
-      localStorage.removeItem("speshway_token");
-      showPage("login");
+      logoutAndRedirect();
     }
   } catch {
-    showPage("login");
+    logoutAndRedirect();
   }
 }
 
@@ -100,6 +107,10 @@ async function apiFetch(path) {
   const res = await fetch(`${API}${path}`, {
     headers: { Authorization: `Bearer ${token()}` },
   });
+  if (res.status === 401 || res.status === 403) {
+    logoutAndRedirect();
+    throw new Error("Unauthorized");
+  }
   if (!res.ok) throw new Error("API error");
   return res.json();
 }

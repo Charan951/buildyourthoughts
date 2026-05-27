@@ -30,7 +30,7 @@ const sendApplicationEmail = async ({ jobTitle, name, email, phone, coverLetter,
   }
   await transporter.sendMail({
     from: `"Speshway Careers" <${process.env.EMAIL_USER}>`,
-    to: "srikanth@speshway.com",
+    to: process.env.EMAIL_USER,
     replyTo: email,
     subject: `New Job Application: ${jobTitle} — ${name}`,
     html: `

@@ -4,7 +4,7 @@ import { fetchPublic } from "@/lib/siteData";
 import { resolveMediaUrl } from "@/lib/mediaUrl";
 import MotionSection from "@/components/MotionSection";
 import TextReveal from "@/components/TextReveal";
-import PhoneMockup from "@/components/PhoneMockup";
+const PhoneMockup = lazy(() => import("@/components/PhoneMockup"));
 import AnimatedSection from "@/components/AnimatedSection";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -81,29 +81,33 @@ const MobileShowcase = () => {
               <AnimatedSection key={i} delay={i * 120} animation="bounce-in">
                 <div className={i === 1 ? "mt-6" : ""}>
                   {useApi ? (
-                    <PhoneMockup
-                      color={(item as ApiPhone).color}
-                      animationClass="animate-float"
-                      animationDelay={delays[i]}
-                    >
-                      <img
-                        src={(item as ApiPhone).image}
-                        alt={(item as ApiPhone).label || `App ${i + 1}`}
-                        className="w-full h-full object-cover object-top"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </PhoneMockup>
-                  ) : (
-                    <PhoneMockup
-                      color={colors[i]}
-                      animationClass="animate-float"
-                      animationDelay={delays[i]}
-                    >
-                      <Suspense fallback={<PhoneFallback />}>
-                        {(() => { const Screen = item as typeof EcommerceScreen; return <Screen />; })()}
-                      </Suspense>
-                    </PhoneMockup>
+                        <Suspense fallback={<PhoneFallback />}>
+                          <PhoneMockup
+                            color={(item as ApiPhone).color}
+                            animationClass="animate-float"
+                            animationDelay={delays[i]}
+                          >
+                            <img
+                              src={(item as ApiPhone).image}
+                              alt={(item as ApiPhone).label || `App ${i + 1}`}
+                              className="w-full h-full object-cover object-top"
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </PhoneMockup>
+                        </Suspense>
+                      ) : (
+                    <Suspense fallback={<PhoneFallback />}>
+                      <PhoneMockup
+                        color={colors[i]}
+                        animationClass="animate-float"
+                        animationDelay={delays[i]}
+                      >
+                        <Suspense fallback={<PhoneFallback />}>
+                          {(() => { const Screen = item as typeof EcommerceScreen; return <Screen />; })()}
+                        </Suspense>
+                      </PhoneMockup>
+                    </Suspense>
                   )}
                 </div>
               </AnimatedSection>

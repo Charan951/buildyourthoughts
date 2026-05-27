@@ -32,6 +32,7 @@ const defaults = [
   { key: "color_primary", label: "Primary Color", value: "#0b78d2", group: "appearance", type: "color" },
   { key: "color_secondary", label: "Secondary Color", value: "#12b5ff", group: "appearance", type: "color" },
   { key: "color_accent", label: "Accent Color", value: "#0ec9ff", group: "appearance", type: "color" },
+  { key: "site_theme", label: "Site Theme", value: "dark", group: "appearance", type: "text" },
   { key: "hero_highlight_color", label: "Hero Highlight Color", value: "#0b78d2", group: "appearance", type: "color" },
   { key: "stat_projects", label: "Stat — Projects", value: "100", group: "stats", type: "text" },
   { key: "stat_projects_suffix", label: "Stat — Projects Suffix", value: "+", group: "stats", type: "text" },

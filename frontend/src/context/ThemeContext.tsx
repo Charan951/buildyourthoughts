@@ -5,11 +5,13 @@ type Theme = "dark" | "light";
 interface ThemeContextValue {
   theme: Theme;
   toggleTheme: () => void;
+  setThemeValue: (theme: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
   theme: "dark",
   toggleTheme: () => {},
+  setThemeValue: () => {},
 });
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
@@ -17,6 +19,24 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const stored = localStorage.getItem("theme") as Theme | null;
     return stored ?? "dark";
   });
+
+  useEffect(() => {
+    const loadStoredTheme = async () => {
+      try {
+        const res = await fetch("/api/settings");
+        if (!res.ok) return;
+        const data = await res.json();
+        const persisted = data.site_theme;
+        if (persisted === "light" || persisted === "dark") {
+          setTheme(persisted);
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    loadStoredTheme();
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -33,9 +53,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   }, [theme]);
 
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+  const setThemeValue = (value: Theme) => setTheme(value);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setThemeValue }}>
       {children}
     </ThemeContext.Provider>
   );

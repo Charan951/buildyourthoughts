@@ -15,7 +15,7 @@ import MagneticButton from "@/components/MagneticButton";
 import { Code, Cloud, Shield, Cpu, Smartphone, Database, Globe, Settings, BarChart, ArrowRight, CheckCircle, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAssets } from "@/hooks/useAssets";
-import { toSlug } from "./ServiceDetail";
+import { toSlug } from "@/lib/toSlug";
 
 interface ApiService {
   _id: string; title: string; description: string; icon: string;
@@ -90,7 +90,7 @@ const Services = () => {
           </MotionSection>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
           {displayServices.map((s, i) => (
             <MotionSection
               key={s.title}
@@ -136,7 +136,7 @@ const Services = () => {
         </div>
 
         <MotionSection animation="zoom-out">
-          <div className="grid grid-cols-4 gap-3 md:gap-12 relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-12 relative">
             {/* Animated path line — animates when parent MotionSection becomes visible */}
             <div className="absolute top-6 md:top-10 left-[10%] right-[10%] h-[2px] bg-white/5 overflow-hidden z-0">
               <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-accent origin-left scale-x-0 transition-transform duration-[1500ms] ease-out delay-300 [.opacity-100_&]:scale-x-100" />
@@ -170,7 +170,7 @@ const Services = () => {
           <p className="text-muted-foreground text-xs md:text-lg leading-relaxed mb-5 md:mb-10 font-light">
             From concept to launch, we create mobile experiences that engage users and drive business results. Our apps are built for performance, security, and scalability.
           </p>
-          <div className="grid grid-cols-2 gap-3 md:gap-6 mb-5 md:mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6 mb-5 md:mb-12">
             {["Cross-platform iOS & Android", "Offline-first architecture", "Real-time sync", "Push notifications"].map((f, i) => (
               <AnimatedSection key={f} delay={i * 100} animation="slide-in-left">
                 <div className="flex items-center gap-2 md:gap-4 group">

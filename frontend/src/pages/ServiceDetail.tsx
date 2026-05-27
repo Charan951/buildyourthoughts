@@ -97,7 +97,7 @@ export default function ServiceDetail() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/5" />
         <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px]" />
 
-        <div className="container relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           {/* Back button */}
           <AnimatedSection animation="fade-in-up" className="mb-4">
             <Link
@@ -184,7 +184,7 @@ export default function ServiceDetail() {
       {/* Why Choose Us for this service */}
       <section className="py-24 bg-background relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-card/20 to-background" />
-        <div className="container relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <MotionSection animation="parallax-reveal" className="text-center mb-16">
             <span className="text-primary text-sm font-bold uppercase tracking-[0.3em] block mb-4">Why BUILD YOUR THOUGHTS</span>
             <TextReveal

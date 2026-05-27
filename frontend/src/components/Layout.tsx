@@ -38,7 +38,10 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
       <Navbar />
 
-      <main key={pathname} className="flex-1 pt-20 relative z-10 animate-page-in scroll-smooth">
+      <main
+        key={pathname}
+        className="flex-1 pt-20 relative z-10 animate-page-in scroll-smooth px-4 sm:px-6 lg:px-8"
+      >
         {children}
       </main>
 

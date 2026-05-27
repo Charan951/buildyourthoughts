@@ -4,7 +4,8 @@ import PageHeader from "@/components/PageHeader";
 import AnimatedSection from "@/components/AnimatedSection";
 import MotionSection from "@/components/MotionSection";
 import GooeyButton from "@/components/GooeyButton";
-import PhoneMockup from "@/components/PhoneMockup";
+import { lazy, Suspense } from "react";
+const PhoneMockup = lazy(() => import("@/components/PhoneMockup"));
 import DashboardScreen from "@/components/phone-screens/DashboardScreen";
 import FitnessScreen from "@/components/phone-screens/FitnessScreen";
 import TextReveal from "@/components/TextReveal";
@@ -141,8 +142,16 @@ const About = () => {
         <div className="relative container grid md:grid-cols-2 gap-8 md:gap-20 items-center">
           <MotionSection animation="zoom-out" className="flex justify-center items-end gap-4 md:gap-8 relative">
             <div className="absolute -inset-10 bg-primary/10 blur-[100px] rounded-full z-0 animate-pulse" />
-            <div className="relative z-10"><PhoneMockup color="primary" animationClass="animate-float" animationDelay="0s"><DashboardScreen /></PhoneMockup></div>
-            <div className="mb-8 md:mb-16 relative z-10"><PhoneMockup color="accent" animationClass="animate-float" animationDelay="0.5s"><FitnessScreen /></PhoneMockup></div>
+            <div className="relative z-10">
+              <Suspense fallback={<div className="w-[220px] h-[440px] bg-slate-800 rounded-2xl" />}>
+                <PhoneMockup color="primary" animationClass="animate-float" animationDelay="0s"><DashboardScreen /></PhoneMockup>
+              </Suspense>
+            </div>
+            <div className="mb-8 md:mb-16 relative z-10">
+              <Suspense fallback={<div className="w-[220px] h-[440px] bg-slate-800 rounded-2xl" />}>
+                <PhoneMockup color="accent" animationClass="animate-float" animationDelay="0.5s"><FitnessScreen /></PhoneMockup>
+              </Suspense>
+            </div>
           </MotionSection>
           <MotionSection animation="skew-up">
             <span className="text-accent text-xs md:text-sm font-bold uppercase tracking-[0.3em]">Our Approach</span>

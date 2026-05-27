@@ -135,7 +135,7 @@ export default function AdminCarousel() {
             <div key={s._id} className={`bg-white rounded-2xl border p-4 md:p-5 transition-all ${s.isActive ? "border-gray-100 shadow-sm" : "border-gray-200 opacity-60"}`}>
               <div className="flex gap-3 md:gap-5 items-start">
                 <div className="w-20 h-14 md:w-32 md:h-20 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                  {s.image ? <img src={s.image} alt="" className="w-full h-full object-cover" /> : (
+                  {s.image ? <img src={s.image} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" /> : (
                     <div className="w-full h-full flex items-center justify-center text-gray-300 text-xl">🖼️</div>
                   )}
                 </div>
@@ -248,8 +248,8 @@ export default function AdminCarousel() {
               <div>
                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Background Image</label>
                 <div onClick={() => fileRef.current?.click()} className="border-2 border-dashed border-gray-200 rounded-xl p-5 text-center cursor-pointer hover:border-purple-400 transition-colors">
-                  {imagePreview ? (
-                    <img src={imagePreview} alt="preview" className="mx-auto max-h-32 rounded-lg object-cover" />
+                    {imagePreview ? (
+                    <img src={imagePreview} alt="preview" loading="lazy" decoding="async" className="mx-auto max-h-32 rounded-lg object-cover" />
                   ) : (
                     <div className="text-gray-400"><div className="text-3xl mb-1">🖼️</div><div className="text-sm">Click to upload background image</div></div>
                   )}

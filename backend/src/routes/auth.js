@@ -4,21 +4,37 @@ const bcrypt = require("bcryptjs");
 const Admin = require("../models/Admin");
 const { login, verify } = require("../controllers/authController");
 
-// Seed default admin on startup
-const seedAdmin = async () => {
+// Seed default admins on startup
+const seedAdmins = async () => {
   try {
-    const hashed = bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10);
-    await Admin.findOneAndUpdate(
-      { email: process.env.ADMIN_EMAIL },
-      { name: "Speshway Admin", email: process.env.ADMIN_EMAIL, password: hashed, role: "Super Admin", isActive: true },
-      { upsert: true, new: true }
-    );
-    console.log("✅ Admin ready:", process.env.ADMIN_EMAIL);
+    const admins = [
+      { name: "Srikanth Siddani", email: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD },
+      { name: "R Chara", email: process.env.ADMIN_EMAIL_2, password: process.env.ADMIN_PASSWORD_2 },
+    ].filter((admin) => admin.email && admin.password);
+
+    const emails = [];
+    for (const admin of admins) {
+      const hashed = bcrypt.hashSync(admin.password, 10);
+      await Admin.findOneAndUpdate(
+        { email: admin.email },
+        { name: admin.name, email: admin.email, password: hashed, role: "Super Admin", isActive: true },
+        { upsert: true, new: true }
+      );
+      emails.push(admin.email);
+      console.log("✅ Admin ready:", admin.email);
+    }
+
+    if (emails.length) {
+      await Admin.updateMany(
+        { email: { $nin: emails } },
+        { isActive: false }
+      );
+    }
   } catch (err) {
     console.error("Seed error:", err.message);
   }
 };
-seedAdmin();
+seedAdmins();
 
 router.post("/login", login);
 router.post("/verify", verify);

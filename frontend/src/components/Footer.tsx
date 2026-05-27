@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
-import { toSlug } from "@/pages/ServiceDetail";
+import { toSlug } from "@/lib/toSlug";
 import { useAssets } from "@/hooks/useAssets";
 import { useSiteData } from "@/context/SiteDataContext";
 import { useSiteDataRefresh } from "@/hooks/useSiteDataRefresh";
@@ -90,7 +90,7 @@ const Footer = () => {
       <div className="relative container py-8 md:py-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-8">
         <div className="col-span-2 sm:col-span-3 lg:col-span-1">
           <div className="flex items-center gap-2 mb-3">
-            <img src={logo} alt={siteName} className="h-8 w-8 md:h-10 md:w-10 object-contain" />
+            <img src={logo} alt={siteName} loading="lazy" decoding="async" className="h-8 w-8 md:h-10 md:w-10 object-contain" />
             <div>
               <span className="block text-xs md:text-sm font-bold text-foreground leading-tight uppercase">
                 {siteName}

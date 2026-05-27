@@ -1,8 +1,9 @@
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
-import HeroCarousel from "@/components/HeroCarousel";
+import { lazy, Suspense } from "react";
+const HeroCarousel = lazy(() => import("@/components/HeroCarousel"));
 import CounterAnimation from "@/components/CounterAnimation";
-import MobileShowcase from "@/components/MobileShowcase";
+const MobileShowcase = lazy(() => import("@/components/MobileShowcase"));
 import TextReveal from "@/components/TextReveal";
 import GooeyButton from "@/components/GooeyButton";
 import MotionSection from "@/components/MotionSection";
@@ -10,7 +11,7 @@ import { ArrowRight, Code, Cloud, Shield, Cpu, Users, Zap, CheckCircle, Star } f
 import { Link } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { toSlug } from "@/pages/ServiceDetail";
+import { toSlug } from "@/lib/toSlug";
 import { useSiteData } from "@/context/SiteDataContext";
 import { useSiteDataRefresh } from "@/hooks/useSiteDataRefresh";
 import { fetchPublic } from "@/lib/siteData";
@@ -114,12 +115,14 @@ const Index = () => {
         style={{ width: "0%" }}
       />
 
-      <HeroCarousel />
+      <Suspense fallback={<div className="min-h-[60vh] bg-background" />}>
+        <HeroCarousel />
+      </Suspense>
 
       {/* Stats */}
       <section className="relative py-10 md:py-24 overflow-hidden bg-background section-optimized">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] bg-primary/5 blur-3xl rounded-full pointer-events-none" aria-hidden />
-        <MotionSection animation="bounce-up" className="relative container grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+          <MotionSection animation="bounce-up" className="relative container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
           {stats.map((s, i) => (
             <AnimatedSection key={s.label} delay={i * 120} animation="elastic-in">
               <div className="text-center group relative p-5 md:p-8 rounded-[2rem] bg-slate-950/10 border border-primary/15 shadow-[0_20px_50px_hsl(var(--primary)/0.06)] hover:bg-slate-950/15 hover:scale-105 transition-all duration-500 overflow-hidden">
@@ -151,7 +154,7 @@ const Index = () => {
               </p>
             </AnimatedSection>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
             {apiServices.map((s, i) => (
               <AnimatedSection key={s.title} delay={i * 100} animation="bounce-in">
                 <Link to={`/services/${toSlug(s.title)}`} className="group h-full block p-5 md:p-8 rounded-[2rem] glass hover:glow-border-strong hover:shadow-[0_20px_70px_hsl(var(--primary)/0.08)] hover:-translate-y-2 transition-all duration-500 border border-primary/15 relative overflow-hidden card-3d">
@@ -170,7 +173,9 @@ const Index = () => {
         </div>
       </section>
 
-      <MobileShowcase />
+      <Suspense fallback={<div className="py-16 md:py-32 bg-background" />}>
+        <MobileShowcase />
+      </Suspense>
 
       {/* Why Choose Us with Rotate-In and Skew */}
       <section className="py-16 md:py-32 bg-background relative overflow-hidden section-optimized">
@@ -242,7 +247,7 @@ const Index = () => {
             />
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-10">
             {testimonials.map((testimonial, i) => (
               <AnimatedSection key={i} delay={i * 150} animation="blur-in">
                 <div className="glass rounded-xl md:rounded-[2.5rem] p-4 md:p-10 hover:glow-border-strong hover:-translate-y-2 transition-all duration-700 h-full flex flex-col border border-primary/15 bg-slate-950/10 shadow-[0_20px_60px_hsl(var(--primary)/0.06)] group relative overflow-hidden card-3d">

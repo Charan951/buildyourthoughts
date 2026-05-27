@@ -212,7 +212,7 @@ export default function AdminDashboard() {
                       {projects.map(p => (
                         <tr key={p._id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                           <td className="py-3 px-4">
-                            {p.image ? <img src={p.image} alt={p.title} className="w-14 h-10 object-cover rounded-lg" /> : <div className="w-14 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-300 text-xs">No img</div>}
+                            {p.image ? <img src={p.image} alt={p.title} loading="lazy" decoding="async" className="w-14 h-10 object-cover rounded-lg" /> : <div className="w-14 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-300 text-xs">No img</div>}
                           </td>
                           <td className="py-3 px-4 font-semibold text-gray-800 max-w-[160px] truncate">{p.title}</td>
                           <td className="py-3 px-4 text-gray-500 text-xs">{p.category}</td>
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
                 <div className="md:hidden divide-y divide-gray-50">
                   {projects.map(p => (
                     <div key={p._id} className="p-4 flex gap-3 items-start">
-                      {p.image ? <img src={p.image} alt={p.title} className="w-16 h-12 object-cover rounded-lg shrink-0" /> : <div className="w-16 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-300 text-xs shrink-0">No img</div>}
+                          {p.image ? <img src={p.image} alt={p.title} loading="lazy" decoding="async" className="w-16 h-12 object-cover rounded-lg shrink-0" /> : <div className="w-16 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-300 text-xs shrink-0">No img</div>}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2 mb-1">
                           <h4 className="font-semibold text-gray-800 text-sm leading-tight truncate">{p.title}</h4>
@@ -327,7 +327,7 @@ export default function AdminDashboard() {
               <div>
                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Project Image</label>
                 <div onClick={() => fileRef.current?.click()} className="border-2 border-dashed border-gray-200 rounded-xl p-5 text-center cursor-pointer hover:border-cyan-400 transition-colors">
-                  {imagePreview ? <img src={imagePreview} alt="preview" className="mx-auto max-h-36 rounded-lg object-cover" /> : (
+                  {imagePreview ? <img src={imagePreview} alt="preview" loading="lazy" decoding="async" className="mx-auto max-h-36 rounded-lg object-cover" /> : (
                     <div className="text-gray-400"><div className="text-3xl mb-2">📁</div><div className="text-sm">Click to upload image</div><div className="text-xs mt-1">JPG, PNG, WEBP</div></div>
                   )}
                 </div>

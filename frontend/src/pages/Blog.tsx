@@ -62,7 +62,7 @@ const Blog = () => {
       {featured && (
         <section className="py-6 md:py-12 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-background via-card to-background" />
-          <div className="relative container grid md:grid-cols-2 gap-6 md:gap-12 items-center">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-6 md:gap-12 items-center">
             <AnimatedSection animation="slide-in-left">
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">Featured</span>
@@ -84,8 +84,8 @@ const Blog = () => {
             <AnimatedSection animation="slide-in-right">
               <div className="relative group">
                 {featured.image ? (
-                  <img src={featured.image} alt={featured.title}
-                    className="relative rounded-xl md:rounded-2xl w-full object-cover shadow-2xl group-hover:scale-[1.02] transition-all duration-500 max-h-40 md:max-h-64" />
+                    <img src={featured.image} alt={featured.title} loading="lazy" decoding="async"
+                      className="relative rounded-xl md:rounded-2xl w-full object-cover shadow-2xl group-hover:scale-[1.02] transition-all duration-500 max-h-40 md:max-h-64" />
                 ) : (
                   <div className="relative rounded-xl md:rounded-2xl w-full h-32 md:h-48 glass border border-border flex items-center justify-center text-4xl md:text-6xl">📝</div>
                 )}
@@ -97,7 +97,7 @@ const Blog = () => {
 
       {/* All Posts */}
       <section className="py-8 md:py-12 pb-12 md:pb-20 bg-background relative overflow-hidden">
-        <div className="container relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <AnimatedSection className="mb-6 md:mb-10">
             <span className="text-secondary text-xs md:text-sm font-semibold uppercase tracking-widest">All Articles</span>
             <h2 className="text-lg md:text-2xl font-heading font-bold mt-1 text-foreground">Latest Posts</h2>
@@ -106,7 +106,7 @@ const Blog = () => {
             {rest.map((p, i) => (
               <AnimatedSection key={p._id} delay={i * 100} animation={i % 3 === 0 ? "slide-in-left" : i % 3 === 1 ? "fade-in-up" : "slide-in-right"}>
                 <Link to={`/blog/${p._id}`} className="group h-full flex flex-col rounded-xl glass hover:glow-border-strong transition-all duration-500 hover:-translate-y-3 cursor-pointer overflow-hidden">
-                  {p.image && <img src={p.image} alt={p.title} className="w-full h-24 md:h-40 object-cover group-hover:scale-105 transition-transform duration-500" />}
+                  {p.image && <img src={p.image} alt={p.title} loading="lazy" decoding="async" className="w-full h-24 md:h-40 object-cover group-hover:scale-105 transition-transform duration-500" />}
                   <div className="p-3 md:p-6 flex flex-col flex-1">
                     <span className={`text-[9px] md:text-xs font-semibold px-2 md:px-3 py-0.5 md:py-1 rounded-full w-fit ${tagColorMap[p.tag] || "bg-muted text-muted-foreground"}`}>{p.tag}</span>
                     <h3 className="font-heading font-semibold text-xs md:text-lg mt-2 mb-1 md:mb-2 text-foreground group-hover:text-primary transition-colors leading-tight">{p.title}</h3>

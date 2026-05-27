@@ -107,7 +107,7 @@ export default function AdminBlog() {
             {posts.map(p => (
               <div key={p._id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-5 hover:shadow-md transition-shadow">
                 <div className="flex gap-3 md:gap-5 items-start">
-                  {p.image && <img src={p.image} alt={p.title} className="w-16 h-12 md:w-24 md:h-16 rounded-xl object-cover shrink-0" />}
+                  {p.image && <img src={p.image} alt={p.title} loading="lazy" decoding="async" className="w-16 h-12 md:w-24 md:h-16 rounded-xl object-cover shrink-0" />}
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-1.5 mb-1">
                       <h3 className="font-bold text-gray-800 text-sm truncate">{p.title}</h3>
@@ -185,7 +185,7 @@ export default function AdminBlog() {
                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Cover Image</label>
                 <div onClick={() => fileRef.current?.click()} className="border-2 border-dashed border-gray-200 rounded-xl p-5 text-center cursor-pointer hover:border-cyan-400 transition-colors">
                   {imagePreview ? (
-                    <img src={imagePreview} alt="preview" className="mx-auto max-h-32 rounded-lg object-cover" />
+                    <img src={imagePreview} alt="preview" loading="lazy" decoding="async" className="mx-auto max-h-32 rounded-lg object-cover" />
                   ) : (
                     <div className="text-gray-400"><div className="text-3xl mb-1">🖼️</div><div className="text-sm">Click to upload cover image</div></div>
                   )}

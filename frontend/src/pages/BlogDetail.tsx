@@ -52,7 +52,7 @@ export default function BlogDetail() {
 
         {post.image && (
           <div className="rounded-3xl overflow-hidden mb-8 shadow-2xl">
-            <img src={post.image} alt={post.title} className="w-full h-64 object-cover" />
+            <img src={post.image} alt={post.title} loading="lazy" decoding="async" className="w-full h-64 object-cover" />
           </div>
         )}
 

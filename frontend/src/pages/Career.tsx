@@ -7,7 +7,8 @@ import PageHeader from "@/components/PageHeader";
 import AnimatedSection from "@/components/AnimatedSection";
 import MotionSection from "@/components/MotionSection";
 import GooeyButton from "@/components/GooeyButton";
-import PhoneMockup from "@/components/PhoneMockup";
+import { lazy, Suspense } from "react";
+const PhoneMockup = lazy(() => import("@/components/PhoneMockup"));
 import FitnessScreen from "@/components/phone-screens/FitnessScreen";
 import DashboardScreen from "@/components/phone-screens/DashboardScreen";
 import TextReveal from "@/components/TextReveal";
@@ -85,11 +86,13 @@ const Career = () => {
         <MotionSection animation="zoom-out" className="flex justify-center relative">
           <div className="relative group">
             <div className="absolute -inset-20 bg-accent/10 blur-[100px] rounded-full z-0 animate-pulse" />
-            <div className="relative z-10">
-              <PhoneMockup color="accent" animationClass="animate-float" animationDelay="0s" className="shadow-2xl">
-                <FitnessScreen />
-              </PhoneMockup>
-            </div>
+              <div className="relative z-10">
+                <Suspense fallback={<div className="w-[220px] h-[440px] bg-slate-800 rounded-2xl" />}>
+                  <PhoneMockup color="accent" animationClass="animate-float" animationDelay="0s" className="shadow-2xl">
+                    <FitnessScreen />
+                  </PhoneMockup>
+                </Suspense>
+              </div>
           </div>
         </MotionSection>
       </div>
