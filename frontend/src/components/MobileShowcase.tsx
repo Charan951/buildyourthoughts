@@ -1,60 +1,83 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSiteDataRefresh } from "@/hooks/useSiteDataRefresh";
 import { fetchPublic } from "@/lib/siteData";
 import { resolveMediaUrl } from "@/lib/mediaUrl";
 import MotionSection from "@/components/MotionSection";
 import TextReveal from "@/components/TextReveal";
-const PhoneMockup = lazy(() => import("@/components/PhoneMockup"));
 import AnimatedSection from "@/components/AnimatedSection";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const EcommerceScreen = lazy(() => import("@/components/phone-screens/EcommerceScreen"));
-const FitnessScreen = lazy(() => import("@/components/phone-screens/FitnessScreen"));
-const DashboardScreen = lazy(() => import("@/components/phone-screens/DashboardScreen"));
-const FoodScreen = lazy(() => import("@/components/phone-screens/FoodScreen"));
-const SocialScreen = lazy(() => import("@/components/phone-screens/SocialScreen"));
-const FintechScreen = lazy(() => import("@/components/phone-screens/FintechScreen"));
-
-const PhoneFallback = () => <div className="w-full h-full bg-slate-800 rounded-2xl" />;
-
-const colors: ("primary" | "secondary" | "accent")[] = ["primary", "secondary", "accent", "primary", "secondary", "accent"];
-const delays = ["0s", "0.3s", "0.6s", "0.9s", "1.2s", "1.5s"];
-const defaultScreens = [EcommerceScreen, FitnessScreen, DashboardScreen, FoodScreen, SocialScreen, FintechScreen];
-
-interface ApiPhone {
+interface ApiProject {
   _id: string;
+  title: string;
   image: string;
-  label: string;
-  color: "primary" | "secondary" | "accent";
-  order: number;
+  category?: string;
+  description?: string;
+  liveUrl?: string;
+  order?: number;
 }
 
-const MobileShowcase = () => {
-  const [apiPhones, setApiPhones] = useState<ApiPhone[]>([]);
+const defaultProjectCards: ApiProject[] = [
+  {
+    _id: "placeholder-1",
+    title: "Project One",
+    category: "Web",
+    description: "A polished web solution built for modern business.",
+    image: "",
+    liveUrl: "",
+    order: 0,
+  },
+  {
+    _id: "placeholder-2",
+    title: "Project Two",
+    category: "Mobile",
+    description: "A smart app experience optimized for mobile users.",
+    image: "",
+    liveUrl: "",
+    order: 1,
+  },
+  {
+    _id: "placeholder-3",
+    title: "Project Three",
+    category: "Design",
+    description: "A visually stunning product crafted with care.",
+    image: "",
+    liveUrl: "",
+    order: 2,
+  },
+];
 
-  const loadPhones = useCallback(() => {
-    fetchPublic<ApiPhone[]>("/api/phone-showcase")
+const MobileShowcase = () => {
+  const [projects, setProjects] = useState<ApiProject[]>([]);
+
+  const loadProjects = useCallback(() => {
+    fetchPublic<ApiProject[]>("/api/projects")
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
-          setApiPhones(
-            data.map((p) => ({ ...p, image: resolveMediaUrl(p.image) }))
+          setProjects(
+            data
+              .map((project) => ({
+                ...project,
+                image: resolveMediaUrl(project.image),
+              }))
+              .sort((a, b) => (a.order || 0) - (b.order || 0))
           );
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        setProjects([]);
+      });
   }, []);
 
   useEffect(() => {
-    loadPhones();
-  }, [loadPhones]);
+    loadProjects();
+  }, [loadProjects]);
 
-  useSiteDataRefresh(["phones", "all"], loadPhones, [loadPhones]);
+  useSiteDataRefresh(["projects", "all"], loadProjects, [loadProjects]);
 
-  const useApi = apiPhones.length > 0;
-
-  // On mobile show 3 phones, on desktop show all 6
-  const mobileCount = 3;
+  const useApi = projects.length > 0;
+  const displayProjects = useApi ? projects.slice(0, 3) : defaultProjectCards;
 
   return (
     <section className="py-16 md:py-32 overflow-hidden relative bg-background section-optimized">
@@ -74,99 +97,61 @@ const MobileShowcase = () => {
 
         <MotionSection animation="bounce-up" className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 rounded-full -z-10" />
-
-          {/* ── Mobile: 3-column grid, no scroll ── */}
-          <div className="grid grid-cols-3 gap-2 md:hidden px-2">
-            {(useApi ? apiPhones.slice(0, mobileCount) : defaultScreens.slice(0, mobileCount)).map((item, i) => (
-              <AnimatedSection key={i} delay={i * 120} animation="bounce-in">
-                <div className={i === 1 ? "mt-6" : ""}>
-                  {useApi ? (
-                        <Suspense fallback={<PhoneFallback />}>
-                          <PhoneMockup
-                            color={(item as ApiPhone).color}
-                            animationClass="animate-float"
-                            animationDelay={delays[i]}
-                          >
-                            <img
-                              src={(item as ApiPhone).image}
-                              alt={(item as ApiPhone).label || `App ${i + 1}`}
-                              className="w-full h-full object-cover object-top"
-                              loading="lazy"
-                              decoding="async"
-                            />
-                          </PhoneMockup>
-                        </Suspense>
-                      ) : (
-                    <Suspense fallback={<PhoneFallback />}>
-                      <PhoneMockup
-                        color={colors[i]}
-                        animationClass="animate-float"
-                        animationDelay={delays[i]}
-                      >
-                        <Suspense fallback={<PhoneFallback />}>
-                          {(() => { const Screen = item as typeof EcommerceScreen; return <Screen />; })()}
-                        </Suspense>
-                      </PhoneMockup>
-                    </Suspense>
-                  )}
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          {/* ── Desktop: horizontal flex row, all 6 ── */}
-          <div className="hidden md:flex items-end justify-center gap-6 pb-4">
-            {(useApi ? apiPhones : defaultScreens).map((item, i) => (
-              <AnimatedSection key={i} delay={i * 120} animation="bounce-in">
-                <div className={i % 2 === 1 ? "mb-10" : ""}>
-                  {useApi ? (
-                    <PhoneMockup
-                      color={(item as ApiPhone).color}
-                      animationClass="animate-float"
-                      animationDelay={delays[i % delays.length]}
-                    >
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {displayProjects.map((project, i) => (
+              <AnimatedSection key={project._id || i} delay={i * 120} animation="bounce-in">
+                <div className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/50 p-4 md:p-5 shadow-[0_20px_60px_hsl(var(--primary)/0.08)] transition-all duration-500 hover:-translate-y-1 hover:border-primary/30">
+                  <div className="relative mb-4 overflow-hidden rounded-[1.5rem] bg-slate-900/40 h-48 md:h-52 shrink-0">
+                    {project.image ? (
                       <img
-                        src={(item as ApiPhone).image}
-                        alt={(item as ApiPhone).label || `App ${i + 1}`}
-                        className="w-full h-full object-cover object-top"
+                        src={project.image}
+                        alt={project.title || `Project ${i + 1}`}
+                        className="h-full w-full object-cover"
                         loading="lazy"
                         decoding="async"
                       />
-                    </PhoneMockup>
-                  ) : (
-                    <PhoneMockup
-                      color={colors[i]}
-                      animationClass="animate-float"
-                      animationDelay={delays[i]}
-                    >
-                      <Suspense fallback={<PhoneFallback />}>
-                        {(() => { const Screen = item as typeof EcommerceScreen; return <Screen />; })()}
-                      </Suspense>
-                    </PhoneMockup>
-                  )}
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-sm text-white/40">No preview available</div>
+                    )}
+                  </div>
+
+                  <div className="flex-1">
+                    <div className="text-xs uppercase tracking-[0.3em] text-primary font-black mb-2">
+                      {project.category || "Project"}
+                    </div>
+                    <h3 className="text-lg font-heading font-black text-white mb-2 leading-snug">
+                      {project.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4 mb-4">
+                      {project.description || "A standout project demonstrating our expertise and attention to detail."}
+                    </p>
+                  </div>
+
+                  <div className="mt-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    {project.liveUrl ? (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-primary font-bold text-sm hover:text-primary/80"
+                      >
+                        Live Preview
+                      </a>
+                    ) : (
+                      <span className="text-xs uppercase tracking-[0.25em] text-white/50">No live URL</span>
+                    )}
+
+                    {project._id ? (
+                      <Link to={`/projects/${project._id}`} className="inline-flex items-center gap-2 text-sm font-bold text-white hover:text-primary">
+                        View Details <ArrowRight size={14} />
+                      </Link>
+                    ) : null}
+                  </div>
                 </div>
               </AnimatedSection>
             ))}
           </div>
         </MotionSection>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8 mt-10 md:mt-20">
-          {[
-            { title: "Mobile App Development", desc: "iOS & Android apps with stunning UI, seamless UX, and world-class performance.", color: "primary" },
-            { title: "Web Development", desc: "Responsive websites and web applications built for extreme performance and scale.", color: "secondary" },
-            { title: "Full-Stack Solutions", desc: "End-to-end digital products from concept to deployment with modern tech stacks.", color: "accent" },
-          ].map((item, i) => (
-            <AnimatedSection key={i} delay={i * 150} animation="fade-in-up">
-              <div className="text-center group p-5 md:p-8 rounded-2xl md:rounded-3xl glass border-border hover:glow-border transition-all duration-500">
-                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-${item.color}/10 border border-${item.color}/20 flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 group-hover:bg-${item.color}/20 transition-all duration-300`}>
-                  <div className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-${item.color} animate-pulse`} />
-                </div>
-                <h3 className={`text-sm md:text-xl font-heading font-bold mb-2 md:mb-3 group-hover:text-${item.color} transition-colors duration-300 leading-tight`}>{item.title}</h3>
-                <p className="text-muted-foreground font-light leading-relaxed text-xs md:text-sm">{item.desc}</p>
-              </div>
-            </AnimatedSection>
-          ))}
-        </div>
 
         <div className="text-center mt-8 md:mt-16">
           <Link

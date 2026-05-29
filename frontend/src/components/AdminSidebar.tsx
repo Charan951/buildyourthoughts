@@ -9,7 +9,6 @@ const navItems = [
   { path: "/admin/submissions", icon: "📋", label: "Submissions" },
   { path: "/admin/blog", icon: "📝", label: "Blog" },
   { path: "/admin/testimonials", icon: "💬", label: "Testimonials" },
-  { path: "/admin/phone-showcase", icon: "📱", label: "Phone Showcase" },
   { path: "/admin/settings", icon: "🔧", label: "Settings" },
 ];
 

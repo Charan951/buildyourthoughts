@@ -11,11 +11,41 @@ const transporter = nodemailer.createTransport({
 
 exports.submit = async (req, res) => {
   const { name, email, phone, address, subject, message } = req.body;
-  if (!name || !email || !subject || !message)
+  const trimmedName = name?.trim();
+  const trimmedEmail = email?.trim();
+  const trimmedSubject = subject?.trim();
+  const trimmedMessage = message?.trim();
+  const trimmedPhone = phone?.trim() || "";
+  const trimmedAddress = address?.trim() || "";
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!trimmedName || !trimmedEmail || !trimmedSubject || !trimmedMessage)
     return res.status(400).json({ message: "Name, email, subject, and message are required." });
 
+  if (trimmedName.length > 80)
+    return res.status(400).json({ message: "Name must be 80 characters or less." });
+  if (trimmedEmail.length > 100)
+    return res.status(400).json({ message: "Email must be 100 characters or less." });
+  if (!emailRegex.test(trimmedEmail))
+    return res.status(400).json({ message: "Please enter a valid email address." });
+  if (trimmedPhone.length > 30)
+    return res.status(400).json({ message: "Phone number must be 30 characters or less." });
+  if (trimmedAddress.length > 120)
+    return res.status(400).json({ message: "Address must be 120 characters or less." });
+  if (trimmedSubject.length > 100)
+    return res.status(400).json({ message: "Subject must be 100 characters or less." });
+  if (trimmedMessage.length > 1200)
+    return res.status(400).json({ message: "Message must be 1200 characters or less." });
+
   try {
-    const entry = await Contact.create({ name, email, phone: phone || "", address: address || "", subject, message });
+    const entry = await Contact.create({
+      name: trimmedName,
+      email: trimmedEmail,
+      phone: trimmedPhone,
+      address: trimmedAddress,
+      subject: trimmedSubject,
+      message: trimmedMessage,
+    });
 
     // Respond immediately — don't let email failure block the user
     res.status(201).json({ message: "Message received! We'll get back to you soon.", id: entry._id });

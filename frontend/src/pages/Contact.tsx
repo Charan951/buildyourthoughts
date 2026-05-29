@@ -10,6 +10,23 @@ const Contact = () => {
   const { settings, s } = useSiteData();
   const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", subject: "", message: "" });
 
+  const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  const validateContactForm = () => {
+    if (!form.name.trim()) return "Name is required.";
+    if (form.name.trim().length > 80) return "Name must be 80 characters or less.";
+    if (!form.email.trim()) return "Email is required.";
+    if (form.email.trim().length > 100) return "Email must be 100 characters or less.";
+    if (!isValidEmail(form.email.trim())) return "Please enter a valid email address.";
+    if (form.phone.trim().length > 30) return "Phone number must be 30 characters or less.";
+    if (form.address.trim().length > 120) return "Address must be 120 characters or less.";
+    if (!form.subject.trim()) return "Subject is required.";
+    if (form.subject.trim().length > 100) return "Subject must be 100 characters or less.";
+    if (!form.message.trim()) return "Message is required.";
+    if (form.message.trim().length > 1200) return "Message must be 1200 characters or less.";
+    return "";
+  };
+
   const contactInfo = useMemo(
     () => [
       { icon: Mail, label: "Email", value: settings.contact_email || "info@buildyourthoughts.com", color: "primary" as const },
@@ -22,6 +39,12 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const validationError = validateContactForm();
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -31,7 +54,7 @@ const Contact = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       toast.success(data.message || "Message sent! We'll get back to you soon.");
-      setForm({ name: "", email: "", subject: "", message: "" });
+      setForm({ name: "", email: "", phone: "", address: "", subject: "", message: "" });
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Failed to send message.");
     }
@@ -52,9 +75,10 @@ const Contact = () => {
             <h2 className="text-lg md:text-2xl font-heading font-bold mt-1 md:mt-2 mb-4 md:mb-6 text-foreground">Send Us a Message</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3 md:gap-4">
               {[
-                { placeholder: "Your Name", key: "name", type: "text" },
-                { placeholder: "Your Email", key: "email", type: "email" },
-                { placeholder: "Phone Number", key: "phone", type: "tel" },
+                { placeholder: "Your Name", key: "name", type: "text", maxLength: 80 },
+                { placeholder: "Your Email", key: "email", type: "email", maxLength: 100 },
+                { placeholder: "Subject", key: "subject", type: "text", maxLength: 100 },
+                { placeholder: "Phone Number", key: "phone", type: "tel", maxLength: 30 },
               ].map((field, i) => (
                 <AnimatedSection key={field.key} delay={i * 80} animation="fade-in-up">
                   <input
@@ -62,6 +86,8 @@ const Contact = () => {
                     placeholder={field.placeholder}
                     value={form[field.key as keyof typeof form]}
                     onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                    maxLength={field.maxLength}
+                    required={field.key !== "phone"}
                     className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-lg glass focus:glow-border focus:outline-none transition-all duration-300 text-sm md:text-base"
                   />
                 </AnimatedSection>
@@ -72,6 +98,7 @@ const Contact = () => {
                   placeholder="Address"
                   value={form.address}
                   onChange={(e) => setForm({ ...form, address: e.target.value })}
+                  maxLength={120}
                   className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-lg glass focus:glow-border focus:outline-none transition-all duration-300 text-sm md:text-base"
                 />
               </AnimatedSection>
@@ -82,6 +109,7 @@ const Contact = () => {
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
                   required
                   rows={4}
+                  maxLength={1200}
                   className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-lg glass focus:glow-border focus:outline-none transition-all duration-300 resize-none text-sm md:text-base"
                 />
               </AnimatedSection>

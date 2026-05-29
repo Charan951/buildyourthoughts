@@ -118,7 +118,7 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
   const groupItems = items.filter(i => i.group === activeGroup);
 
   return (
-    <div className="admin-page space-y-6 [color-scheme:light]">
+    <div className="space-y-6 [color-scheme:light]">
       {/* Admin info card */}
       {admin && (
         <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex gap-6 items-center">
@@ -331,14 +331,14 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                 <div className="text-xs text-gray-500 mb-3">{values[stat.labelKey] || "—"}</div>
                 <div className="space-y-2">
                   <div>
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Value</label>
+                    <label className="text-[10px] text-gray-600 font-bold uppercase tracking-wider block mb-1">Value</label>
                     <input type="text" value={values[stat.valKey] || ""} onChange={e => setValues(p => ({ ...p, [stat.valKey]: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm font-bold text-gray-900 bg-white" placeholder="99%" />
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm font-bold text-gray-900 bg-gray-50" placeholder="99%" />
                   </div>
                   <div>
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Label</label>
+                    <label className="text-[10px] text-gray-600 font-bold uppercase tracking-wider block mb-1">Label</label>
                     <input type="text" value={values[stat.labelKey] || ""} onChange={e => setValues(p => ({ ...p, [stat.labelKey]: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm" placeholder="Satisfaction" />
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm text-gray-900 bg-gray-50" placeholder="Satisfaction" />
                   </div>
                 </div>
               </div>
@@ -352,9 +352,9 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
           <div className="grid md:grid-cols-2 gap-3 mb-6">
             {[1,2,3,4,5,6].map(n => (
               <div key={n}>
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Point {n}</label>
+                <label className="text-[10px] text-gray-600 font-bold uppercase tracking-wider block mb-1">Point {n}</label>
                 <input type="text" value={values[`whyus_point${n}`] || ""} onChange={e => setValues(p => ({ ...p, [`whyus_point${n}`]: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm" />
+                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm text-gray-900 bg-gray-50" />
               </div>
             ))}
           </div>
@@ -375,14 +375,14 @@ export default function SiteSettingsPanel({ admin }: { admin?: { email?: string;
                 <div className="text-xs text-gray-500 mb-3">{values[stat.labelKey] || "—"}</div>
                 <div className="space-y-2">
                   <div>
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Value</label>
+                    <label className="text-[10px] text-gray-600 font-bold uppercase tracking-wider block mb-1">Value</label>
                     <input type="text" value={values[stat.valKey] || ""} onChange={e => setValues(p => ({ ...p, [stat.valKey]: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm font-bold text-gray-900 bg-white" />
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm font-bold text-gray-900 bg-gray-50" />
                   </div>
                   <div>
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Label</label>
+                    <label className="text-[10px] text-gray-600 font-bold uppercase tracking-wider block mb-1">Label</label>
                     <input type="text" value={values[stat.labelKey] || ""} onChange={e => setValues(p => ({ ...p, [stat.labelKey]: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm" />
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none text-sm text-gray-900 bg-gray-50" />
                   </div>
                 </div>
               </div>

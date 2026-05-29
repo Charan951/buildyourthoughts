@@ -134,7 +134,7 @@ export default function AdminJobs() {
     <div className="admin-page flex min-h-screen bg-gray-50 font-sans">
       <AdminSidebar active="Jobs" />
 
-      <main className="lg:ml-56 flex-1 p-4 md:p-6 pt-16 lg:pt-6 min-w-0">
+      <main className="md:ml-56 lg:ml-56 flex-1 p-4 md:p-6 pt-16 lg:pt-6 min-w-0">
         <div className="flex items-center justify-between mb-6 gap-3">
           <div>
             <h1 className="text-xl md:text-2xl font-black text-gray-900">Jobs & Applications</h1>

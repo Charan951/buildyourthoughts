@@ -36,7 +36,6 @@ const AdminBlog = lazy(() => import("./pages/AdminBlog"));
 const AdminSettings = lazy(() => import("./pages/AdminSettings"));
 const AdminSubmissions = lazy(() => import("./pages/AdminSubmissions"));
 const AdminTestimonials = lazy(() => import("./pages/AdminTestimonials"));
-const AdminPhoneShowcase = lazy(() => import("./pages/AdminPhoneShowcase"));
 import RequireAdminAuth from "./components/RequireAdminAuth";
 
 // Created once — never recreated on re-renders
@@ -150,14 +149,6 @@ const AppRoutes = () => {
             element={
               <RequireAdminAuth>
                 <AdminTestimonials />
-              </RequireAdminAuth>
-            }
-          />
-          <Route
-            path="/admin/phone-showcase"
-            element={
-              <RequireAdminAuth>
-                <AdminPhoneShowcase />
               </RequireAdminAuth>
             }
           />

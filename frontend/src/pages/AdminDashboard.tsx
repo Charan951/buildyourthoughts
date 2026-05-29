@@ -99,8 +99,36 @@ export default function AdminDashboard() {
     setImageFile(null); setImagePreview(p.image || ""); setError(""); setShowModal(true);
   };
 
+  const isValidUrl = (value: string) => {
+    if (!value) return true;
+    try { new URL(value); return true; } catch { return false; }
+  };
+
+  const validateProjectForm = () => {
+    if (!form.title.trim()) { setError("Project title is required."); return false; }
+    if (form.title.trim().length > 120) { setError("Project title must be 120 characters or less."); return false; }
+    if (!form.category.trim()) { setError("Project category is required."); return false; }
+    if (form.category.trim().length > 60) { setError("Project category must be 60 characters or less."); return false; }
+    if (!form.description.trim()) { setError("Project description is required."); return false; }
+    if (form.description.trim().length > 800) { setError("Project description must be 800 characters or less."); return false; }
+    const techItems = form.tech.split(",").map(t => t.trim()).filter(Boolean);
+    if (techItems.length === 0) { setError("Please add at least one technology."); return false; }
+    if (techItems.some(t => t.length > 40)) { setError("Each technology tag must be 40 characters or less."); return false; }
+    if (form.features.split("\n").map(f => f.trim()).filter(Boolean).length === 0) { setError("Please add at least one feature."); return false; }
+    if (form.features.length > 800) { setError("Features must be 800 characters or less."); return false; }
+    if (form.client.trim().length > 60) { setError("Client name must be 60 characters or less."); return false; }
+    if (form.order.trim() === "" || Number.isNaN(Number(form.order))) { setError("Project order must be a valid number."); return false; }
+    if (form.liveUrl.trim().length > 200) { setError("Live URL must be 200 characters or less."); return false; }
+    if (!isValidUrl(form.liveUrl)) { setError("Please enter a valid live URL or leave it blank."); return false; }
+    if (!editProject && !imageFile) { setError("Please upload a project image."); return false; }
+    return true;
+  };
+
   const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault(); setSaving(true); setError("");
+    e.preventDefault();
+    setError("");
+    if (!validateProjectForm()) return;
+    setSaving(true);
     try {
       const fd = new FormData();
       fd.append("title", form.title); fd.append("category", form.category); fd.append("description", form.description);
@@ -109,7 +137,7 @@ export default function AdminDashboard() {
       fd.append("liveUrl", form.liveUrl); fd.append("status", form.status); fd.append("client", form.client); fd.append("order", form.order);
       if (imageFile) fd.append("image", imageFile);
       const res = await apiFetch(editProject ? `/projects/${editProject._id}` : "/projects", { method: editProject ? "PUT" : "POST", body: fd });
-      if (!res.ok) { const d = await res.json(); throw new Error(d.message); }
+      if (!res.ok) { const d = await res.json(); throw new Error(d.message || "Failed to save project."); }
       const saved = await res.json();
       setProjects(prev => editProject ? prev.map(p => p._id === saved._id ? saved : p) : [...prev, saved]);
       setShowModal(false);
@@ -135,12 +163,29 @@ export default function AdminDashboard() {
     setServiceError(""); setShowServiceModal(true);
   };
 
+  const validateServiceForm = () => {
+    if (!serviceForm.title.trim()) { setServiceError("Service title is required."); return false; }
+    if (serviceForm.title.trim().length > 100) { setServiceError("Service title must be 100 characters or less."); return false; }
+    if (!serviceForm.description.trim()) { setServiceError("Service description is required."); return false; }
+    if (serviceForm.description.trim().length > 500) { setServiceError("Service description must be 500 characters or less."); return false; }
+    if (!serviceForm.icon.trim()) { setServiceError("Service icon label is required."); return false; }
+    if (serviceForm.icon.trim().length > 30) { setServiceError("Service icon label must be 30 characters or less."); return false; }
+    if (!serviceForm.color.trim()) { setServiceError("Service color is required."); return false; }
+    if (serviceForm.features.split("\n").map(f => f.trim()).filter(Boolean).length === 0) { setServiceError("Please add at least one service feature."); return false; }
+    if (serviceForm.features.length > 500) { setServiceError("Service features must be 500 characters or less."); return false; }
+    if (serviceForm.order.trim() === "" || Number.isNaN(Number(serviceForm.order))) { setServiceError("Service order must be a valid number."); return false; }
+    return true;
+  };
+
   const handleServiceSave = async (e: React.FormEvent) => {
-    e.preventDefault(); setServiceSaving(true); setServiceError("");
+    e.preventDefault();
+    setServiceError("");
+    if (!validateServiceForm()) return;
+    setServiceSaving(true);
     try {
       const body = { title: serviceForm.title, description: serviceForm.description, icon: serviceForm.icon, color: serviceForm.color, features: serviceForm.features, order: serviceForm.order };
       const res = await apiFetch(editService ? `/services/${editService._id}` : "/services", { method: editService ? "PUT" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      if (!res.ok) { const d = await res.json(); throw new Error(d.message); }
+      if (!res.ok) { const d = await res.json(); throw new Error(d.message || "Failed to save service."); }
       const saved = await res.json();
       setServices(prev => editService ? prev.map(s => s._id === saved._id ? saved : s) : [...prev, saved]);
       setShowServiceModal(false);
@@ -163,7 +208,7 @@ export default function AdminDashboard() {
     <div className="admin-page flex min-h-screen bg-gray-50 font-sans">
       <AdminSidebar active={sectionLabel} />
 
-      <main className="lg:ml-56 flex-1 p-4 md:p-6 pt-16 lg:pt-6 min-w-0">
+      <main className="md:ml-56 lg:ml-56 flex-1 p-4 md:p-6 pt-16 lg:pt-6 min-w-0">
         {/* Header */}
         <div className="flex items-center justify-between mb-6 gap-3">
           <div className="min-w-0">

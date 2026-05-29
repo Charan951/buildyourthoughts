@@ -79,7 +79,7 @@ export default function AdminSubmissions() {
     <div className="admin-page flex min-h-screen bg-gray-50 font-sans">
       <AdminSidebar active="Submissions" />
 
-      <main className="lg:ml-56 flex-1 p-4 md:p-6 pt-16 lg:pt-6 min-w-0">
+      <main className="md:ml-56 lg:ml-56 flex-1 p-4 md:p-6 pt-16 lg:pt-6 min-w-0">
         {/* Header */}
         <div className="flex items-center justify-between mb-6 gap-3">
           <div>
