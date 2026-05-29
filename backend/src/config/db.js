@@ -6,8 +6,9 @@ dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
 
 const connectDB = async () => {
   try {
+    const dbName = process.env.DB_NAME || process.env.MONGO_DB_NAME || "buildyourthoughts";
     const conn = await mongoose.connect(process.env.MONGO_URI, {
-      dbName: "buildyourthoughts",
+      dbName,
       serverSelectionTimeoutMS: 10000,
       connectTimeoutMS: 10000,
       socketTimeoutMS: 45000,

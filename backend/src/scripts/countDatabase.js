@@ -15,7 +15,9 @@ const JobApplication = require('../models/JobApplication');
 const Settings = require('../models/Settings');
 
 (async () => {
-  await mongoose.connect(process.env.MONGO_URI, { dbName: 'buildyourthoughts' });
+  await mongoose.connect(process.env.MONGO_URI, {
+    dbName: process.env.DB_NAME || process.env.MONGO_DB_NAME || 'buildyourthoughts',
+  });
   const counts = await Promise.all([
     Project.countDocuments(),
     BlogPost.countDocuments(),

@@ -168,8 +168,9 @@ async function run() {
   console.log(`Source DB: ${SOURCE_MONGO_URI}`);
   console.log(`Target DB: ${TARGET_MONGO_URI}`);
 
+  const dbName = process.env.DB_NAME || process.env.MONGO_DB_NAME || "buildyourthoughts";
   const sourceConn = await mongoose.createConnection(SOURCE_MONGO_URI, {
-    dbName: "buildyourthoughts",
+    dbName,
     serverSelectionTimeoutMS: 10000,
     connectTimeoutMS: 10000,
     socketTimeoutMS: 45000,
@@ -178,7 +179,7 @@ async function run() {
   const targetConn = sameDb
     ? sourceConn
     : await mongoose.createConnection(TARGET_MONGO_URI, {
-        dbName: "buildyourthoughts",
+        dbName,
         serverSelectionTimeoutMS: 10000,
         connectTimeoutMS: 10000,
         socketTimeoutMS: 45000,

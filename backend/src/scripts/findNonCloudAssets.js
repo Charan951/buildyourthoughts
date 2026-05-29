@@ -26,7 +26,9 @@ function needsUpload(value) {
 }
 
 async function scan() {
-  await mongoose.connect(process.env.MONGO_URI, { dbName: 'buildyourthoughts' });
+  await mongoose.connect(process.env.MONGO_URI, {
+    dbName: process.env.DB_NAME || process.env.MONGO_DB_NAME || 'buildyourthoughts',
+  });
 
   const results = {};
 

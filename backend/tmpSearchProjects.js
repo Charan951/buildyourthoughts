@@ -7,7 +7,10 @@ const mongoose = require('mongoose');
 const Project = require('./src/models/Project');
 
 (async () => {
-  await mongoose.connect(process.env.MONGO_URI, { dbName: 'buildyourthoughts', serverSelectionTimeoutMS: 10000 });
+  await mongoose.connect(process.env.MONGO_URI, {
+    dbName: process.env.DB_NAME || process.env.MONGO_DB_NAME || 'buildyourthoughts',
+    serverSelectionTimeoutMS: 10000,
+  });
   const query = {
     $or: [
       { title: { $regex: 'check', $options: 'i' } },
