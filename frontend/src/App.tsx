@@ -30,6 +30,8 @@ const JobDetail = lazy(() => import("./pages/JobDetail"));
 const JobApply = lazy(() => import("./pages/JobApply"));
 
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const AdminForgotPassword = lazy(() => import("./pages/AdminForgotPassword"));
+const AdminResetPassword = lazy(() => import("./pages/AdminResetPassword"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminCarousel = lazy(() => import("./pages/AdminCarousel"));
 const AdminBlog = lazy(() => import("./pages/AdminBlog"));
@@ -103,6 +105,8 @@ const AppRoutes = () => {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/forgot" element={<AdminForgotPassword />} />
+          <Route path="/admin/reset/:token" element={<AdminResetPassword />} />
           <Route path="/admin-dashboard" element={<Navigate to="/admin/dashboard" replace />} />
           <Route
             path="/admin/dashboard"

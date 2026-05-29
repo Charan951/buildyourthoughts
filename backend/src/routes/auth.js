@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const Admin = require("../models/Admin");
-const { login, verify } = require("../controllers/authController");
+const { login, verify, forgotPassword, resetPassword } = require("../controllers/authController");
 
 // Seed default admins on startup
 const seedAdmins = async () => {
@@ -37,6 +37,8 @@ const seedAdmins = async () => {
 seedAdmins();
 
 router.post("/login", login);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 router.post("/verify", verify);
 
 module.exports = router;

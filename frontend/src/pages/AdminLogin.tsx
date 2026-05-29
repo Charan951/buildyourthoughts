@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Lock, Mail, Eye, EyeOff } from "lucide-react";
 
 const LOGO_SRC = "/logo.png";
@@ -128,6 +128,10 @@ const AdminLogin = () => {
             {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
+
+        <div className="mt-4 text-center text-sm">
+          <Link to="/admin/forgot" className="text-purple-600 hover:underline">Forgot password?</Link>
+        </div>
 
         <p className="text-center text-[10px] text-gray-400 mt-4 tracking-wide">
           Authorized personnel only
